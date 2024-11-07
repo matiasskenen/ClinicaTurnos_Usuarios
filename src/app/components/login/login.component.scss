@@ -1,0 +1,43 @@
+/* Fondo suave y card con sombra */
+.card {
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+.card-body {
+  background-color: #f8f9fa;
+}
+
+/* Encabezado del formulario */
+.card-title {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #007bff;  /* Color azul de la clínica */
+}
+
+/* Botón */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+/* Estilo del error */
+.alert {
+  background-color: #f8d7da;
+  color: #721c24;
+  font-weight: 500;
+}
+
+/* Estilo del formulario */
+input.form-control {
+  border-radius: 5px;
+  height: 45px;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+body {
+  background-color: #f0f8ff;
+}
