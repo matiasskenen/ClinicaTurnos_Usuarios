@@ -1,0 +1,16 @@
+ul {
+    list-style-type: none;
+}
+
+.card {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efecto suave */
+}
+
+.card:hover {
+    background-color: #28a745; /* Verde suave de fondo al pasar el ratón */
+    color: #ffffff; /* Color blanco para el texto */
+    transform: translateY(-5px); /* Levantar ligeramente la tarjeta */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Aumentar la sombra al pasar el ratón */
+}
+

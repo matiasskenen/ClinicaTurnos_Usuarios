@@ -20,6 +20,7 @@ export class RegisterComponent {
 
   loggedUser: string = "";
   flagError: boolean = false;
+  flagSuccess : boolean = false;
   msjError: string = "";
   isLoading = false;
 
@@ -50,7 +51,13 @@ export class RegisterComponent {
       especialidadOtro: new FormControl(''),
     },);
   }
-  
+
+ 
+
+  get especialidad() {
+    return this.form.get('especialidad');
+  } 
+
   get especialidadOtro() {
     return this.form.get('especialidadOtro');
   }
@@ -88,9 +95,7 @@ export class RegisterComponent {
     return this.form.get('obrasocial');
   }
 
-  get especialidad() {
-    return this.form.get('especialidad');
-  }
+
 
 
   enviar()
@@ -103,7 +108,7 @@ export class RegisterComponent {
       this.sendUser();
       this.form.reset();
       this.resultado = "El formulario Enviado"
-      this.flagError = false;
+      this.flagSuccess = true;
     } 
     else 
     {
@@ -183,23 +188,34 @@ export class RegisterComponent {
           this.form.value.dni, 
           this.form.value.mail, 
           this.form.value.clave,
-          this.arrayEspecialidaes 
+          this.especialidades 
         )
+
+        this.otro = false;
+        this.especialidades = [];
+        
+        console.log(this.especialidades)
 
       break;
     }
   }
 
-  especialidades: string[] = ['especialidad1'];
-  arrayEspecialidaes : string[] = [];
+  especialidades: string[] = [];
 
-  addEspecialidad() {
-    const newEspecialidad = `especialidad${this.especialidades.length + 1}`;
-    this.especialidades.push(newEspecialidad);
-    this.arrayEspecialidaes.push(newEspecialidad);
-    this.form.addControl(newEspecialidad, new FormControl('', Validators.required));
-    this.form.addControl(`${newEspecialidad}Otro`, new FormControl(''));
-    }
+
+  addEspecialidad() 
+  {
+    this.otro = true;
+  }
+
+  DepartamentList = ["hola", "chau"]
+
+  changeDepartament(e:any)
+  {
+    this.especialidades.push(e.target.value)
+    console.log(this.especialidades)
+  }
+
 
 
 }

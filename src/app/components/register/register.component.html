@@ -113,22 +113,29 @@
                             <!-- Especialidades dinámicas -->
                             <div *ngIf="role.value === 'empleado'">
                                 <label>Seleccione Especialidades:</label>
-                                <div *ngFor="let especialidad of especialidades; let i = index">
-                                    <select class="form-select" [formControlName]="especialidad">
-                                        <option value="" disabled selected>Seleccione una opción</option>
-                                        <option value="especialidad1">Especialidad1</option>
-                                        <option value="especialidad2">Especialidad2</option>
-                                        <option value="especialidad3">Especialidad3</option>
-                                        <option value="otro">Otro</option>
+
+                                <div class="col-sm-10">
+                                    <select name="Departamente" (change)="changeDepartament($event)" class="form-control">
+                                        <option>--Select--</option>
+                                        <option *ngFor="let dep of DepartamentList">
+                                            {{dep}}
+                                        </option>
                                     </select>
-                                    <br>
-                                    <!-- Mostrar campo de texto si selecciona "otro" -->
-                                    <div *ngIf="form.get(especialidad)?.value === 'otro'">
-                                        <input type="text" class="form-control mt-2" placeholder="Especifique otra especialidad" [formControlName]="especialidad + 'Otro'">
-                                    </div>
                                 </div>
+
+                                <br> 
+                                
+                                <div class="col-sm-10" *ngIf="otro">
+                                    <select name="Departamente" (change)="changeDepartament($event)" class="form-control">
+                                        <option>--Select--</option>
+                                        <option *ngFor="let dep of DepartamentList">
+                                            {{dep}}
+                                        </option>
+                                    </select>
+                                </div>
+
                                 <!-- Botón para agregar una nueva especialidad -->
-                                <button *ngIf="especialidades.length != 2" type="button" class="btn btn-secondary mt-2" (click)="addEspecialidad()">Agregar Especialidad</button>
+                                <button *ngIf="otro == false" type="button" class="btn btn-secondary mt-2" (click)="addEspecialidad()">Agregar Especialidad</button>
                             </div>
 
 
@@ -142,7 +149,8 @@
                 <button type="submit" class="btn btn-primary w-100" (click)="enviar()">Enviar</button>
 
                 <!-- Mensaje de error -->
-                <div *ngIf="flagError" class="alert alert-danger mt-3" role="alert">{{ resultado }}</div>
+                <div *ngIf="flagError == true" class="alert alert-danger mt-3" role="alert">{{ resultado }}</div>
+                <div *ngIf="flagSuccess == true" class="alert alert-success mt-3" role="alert">{{ resultado }}</div>
             </form>
         </div>
     </div>

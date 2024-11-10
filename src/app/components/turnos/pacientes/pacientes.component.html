@@ -1,0 +1,60 @@
+<!-- Contenedor principal centrado -->
+<div class="container mt-5">
+
+    <!-- Título -->
+    <h1 class="text-center mb-4">Clínica - Búsqueda de Turnos</h1>
+  
+    <!-- Input de texto para búsqueda -->
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="input-group mb-4">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Buscar especialista o especialidad" 
+            aria-label="Buscar"
+            [(ngModel)]="busqueda" 
+            (input)="filtrar()"  
+          />
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mostrar las especialidades filtradas -->
+    <div *ngIf="especialidadesFiltradas.length > 0">
+      <h3 class="text-center mb-3">Especialidades Disponibles</h3>
+      <div class="row justify-content-center">
+        <div *ngFor="let especialidad of especialidadesFiltradas" class="col-md-4 mb-3">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <p class="card-text">Especialidad: {{ especialidad }}</p>
+              <span class="badge bg-success">Disponible</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mostrar los nombres de especialistas filtrados -->
+    <div *ngIf="nombresFiltrados.length > 0">
+      <h3 class="text-center mb-3">Especialistas Disponibles</h3>
+      <div class="row justify-content-center">
+        <div *ngFor="let especialista of nombresFiltrados" class="col-md-4 mb-3">
+          <div class="card shadow-sm">
+            <div class="card-body text-center">
+              <h5 class="card-title">{{ especialista.nombre }}</h5>
+              <p class="card-text">Especialidad: {{ especialista.especialidad }}</p>
+              <span class="badge bg-success">Disponible</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mensaje si no hay resultados -->
+    <div *ngIf="especialidadesFiltradas.length === 0 && nombresFiltrados.length === 0">
+      <p class="text-center">No se encontraron resultados.</p>
+    </div>
+  
+  </div>
+  

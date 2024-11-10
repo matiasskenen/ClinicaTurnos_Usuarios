@@ -67,7 +67,7 @@ export class UsuariosService {
   {
     
     console.log(nombre)
-    let col = collection(this.firestore, "admins");
+    let col = collection(this.firestore, "especialistas");
 
     let obj = { 
       nombre: nombre,
@@ -78,6 +78,7 @@ export class UsuariosService {
       clave: clave,
       especialista : especialista
     };
+
 
 
     addDoc(col, obj)
