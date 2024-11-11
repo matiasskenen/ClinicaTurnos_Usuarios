@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { orderBy, query, where } from 'firebase/firestore';
 import { Observable, Subscription } from 'rxjs';
+import { DataService } from '../../services/authUsers/data.service';
 
 @Component({
   selector: 'app-login',
@@ -136,7 +137,7 @@ export class LoginComponent {
   flagError: boolean = false;
   msjError: string = "";
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private userService : DataService) {}
 
 
   loginUser()
@@ -144,15 +145,14 @@ export class LoginComponent {
     signInWithEmailAndPassword(this.auth, this.email, this.password).then((res) => 
     {
       if ( res.user.email !== null)
-        {
-          this.isLoading = true;
-          setTimeout(() => {
-            console.log("aaaaaaaaca" + this.email)
-            //this.userService.setUser(this.email);
-            this.isLoading = false;
-            this.router.navigate(["/home"]);
-          }, 1000);
-        } 
+      {
+        this.isLoading = true;
+        setTimeout(() => {
+          this.userService.setUser(this.email);
+          this.isLoading = false;
+          this.router.navigate(["/home"]);
+        }, 1000);
+      } 
 
       this.flagError = false;
     }).catch((e) => {
@@ -190,6 +190,12 @@ export class LoginComponent {
           break;
       }
     })
+  }
+
+  autocompletar(email: string, password: string) 
+  {
+    this.email = email;
+    this.password = password;
   }
 
 }

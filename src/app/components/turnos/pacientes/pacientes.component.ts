@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { TurnosService } from '../../../services/turnos/turnos.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DetalleTurnoComponent } from './turnos-pacientes/components/detalle-turno/detalle-turno.component';
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DetalleTurnoComponent],
   templateUrl: './pacientes.component.html',
   styleUrl: './pacientes.component.scss'
 })
@@ -15,6 +16,14 @@ export class PacientesComponent {
   constructor(private turnos: TurnosService) {
     this.dataEspecialidades();
     this.dataNombres();
+  }
+
+  especialistaSeleccionado: any;
+  especialidadSeleccionado: any;
+
+  seleccionarEspecialista(especialista: any) {
+    this.especialistaSeleccionado = especialista.nombre;
+    this.especialidadSeleccionado = especialista.especialidad;
   }
 
   // Variables de búsqueda

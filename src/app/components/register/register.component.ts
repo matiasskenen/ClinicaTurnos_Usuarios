@@ -109,11 +109,12 @@ export class RegisterComponent {
       this.form.reset();
       this.resultado = "El formulario Enviado"
       this.flagSuccess = true;
+      this.router.navigate(["/home"]);
     } 
     else 
     {
       this.flagError = true;
-      console.log("error")
+      console.log("Error Formulario")
       this.resultado = "El formulario no es válido, Completar los demas Campos"
       this.form.markAllAsTouched();
     }
@@ -157,6 +158,19 @@ export class RegisterComponent {
 
   sendUser()
   {
+
+      // Aquí realizas la creación del usuario
+      createUserWithEmailAndPassword(this.auth, this.form.value.mail, this.form.value.clave).then((res) => {
+        if (res.user.email !== null) {
+          // Realiza alguna acción si el usuario fue creado exitosamente
+          console.log('Usuario creado con éxito:', res.user);
+        }
+      }).catch((error) => {
+        // Manejo de errores
+        console.error('Error al crear el usuario:', error);
+      });
+
+
     switch(this.rol)
     {
       case "cliente":
@@ -179,6 +193,7 @@ export class RegisterComponent {
           this.form.value.mail, 
           this.form.value.clave, 
         )
+        
       break;
       default:
         this.sendUsers.sendEspecialista(
@@ -188,13 +203,11 @@ export class RegisterComponent {
           this.form.value.dni, 
           this.form.value.mail, 
           this.form.value.clave,
-          this.especialidades 
+          this.especialidades
         )
 
         this.otro = false;
         this.especialidades = [];
-        
-        console.log(this.especialidades)
 
       break;
     }
@@ -213,7 +226,6 @@ export class RegisterComponent {
   changeDepartament(e:any)
   {
     this.especialidades.push(e.target.value)
-    console.log(this.especialidades)
   }
 
 

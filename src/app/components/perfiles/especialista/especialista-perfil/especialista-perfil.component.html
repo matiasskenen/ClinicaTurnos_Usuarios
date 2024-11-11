@@ -1,0 +1,64 @@
+
+<div class="container mt-5">
+    <!-- Título de la página -->
+    <h1 class="text-center mb-4">Configuración</h1>
+    
+    <!-- Panel de configuración -->
+    <div class="row">
+        <!-- Contenido de configuración -->
+        <div class="col-md-9">
+            <div class="tab-content">
+                <!-- Configuración de cuenta -->
+                <div class="tab-pane fade show active" id="accountSettings">
+                    <h3>Cuenta</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nombre de usuario</label>
+                            <input type="text" class="form-control" id="username" placeholder="Nombre de usuario">
+                            <br>
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="email" disabled placeholder="{{user}}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Dias Laborales</label>
+                            <input type="email" class="form-control" id="email" disabled placeholder="LUNES, MIERCOLES, VIERNES">
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </form>
+                </div>
+                <br>
+                <div class="tab-pane fade show active" id="accountSettings">
+                    <h3>Establecer Horario</h3>
+                    <form>
+                        <!-- Especialidades dinámicas -->
+                        <div>
+                            <div class="col-sm-10">
+
+                                <label for="email" class="form-label">Ultimo Cambio:</label>
+                                <input type="email" class="form-control" id="email" disabled placeholder="{{getHorario}}">
+                                <br>
+
+                                <select name="Departamente" (change)="changeDepartament($event)" class="form-control">
+                                    <option>--Select--</option>
+                                    <option *ngFor="let dep of DepartamentList">
+                                        {{dep}}
+                                    </option>
+                                </select>
+                                <br>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" (click)="saveDataHorario()">Guardar cambios</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
