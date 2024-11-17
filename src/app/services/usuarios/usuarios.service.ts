@@ -80,7 +80,8 @@ export class UsuariosService {
         email: email,
         clave: clave,
         especialista : especialista,
-        perfil : "especialista"
+        perfil : "especialista",
+        verificado : false
       };
 
 
@@ -109,13 +110,13 @@ export class UsuariosService {
     ingresarHorario(horario : string)
     {
       // Suponiendo que deseas buscar por email
-      const emailBuscado = "juan@gmail.com"; // Cambia esto con el email que buscas
+      const nombreBuscado = "juan@gmail.com"; // Cambia esto con el email que buscas
 
       // Crear una referencia a la colección
       const coleccionRef = collection(this.firestore, "especialistas");
 
       // Crear una consulta que busque el documento donde el email coincide
-      const consulta = query(coleccionRef, where("email", "==", emailBuscado));
+      const consulta = query(coleccionRef, where("email", "==", nombreBuscado));
 
       // Obtener los documentos que coinciden con la consulta
       getDocs(consulta).then((querySnapshot) => {
@@ -138,6 +139,46 @@ export class UsuariosService {
         console.error("Error al realizar la consulta:", error);
       });
     }
+
+    modificarVerficiado(funicion : string, nombre : string)
+    {
+      const nombreBuscado = nombre;
+
+      const coleccionRef = collection(this.firestore, "especialistas");
+
+      const consulta = query(coleccionRef, where("nombre", "==", nombreBuscado));
+
+      var accionVerificado = false;
+
+
+      if(funicion == "habilitar")
+      {
+        accionVerificado = true;
+      }
+
+      getDocs(consulta).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+
+          const docSnap = querySnapshot.docs[0]; 
+          const idEspecialista = docSnap.id; 
+
+
+          const especialistaRef = doc(this.firestore, "especialistas", idEspecialista);
+          
+          updateDoc(especialistaRef, {
+            verificado: accionVerificado 
+          })
+
+        } 
+        else 
+        {
+          console.log("No se encontró el especialista con ese email.");
+        }
+      }).catch((error) => {
+        console.error("Error al realizar la consulta:", error);
+      });
+    }
+
 
    
   

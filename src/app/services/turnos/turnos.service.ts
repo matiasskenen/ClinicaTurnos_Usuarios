@@ -17,6 +17,26 @@ export class TurnosService {
 
   constructor(private firestore: Firestore, private auth: Auth) { }
 
+  getUsuarios(): Observable<any[]> {
+    const col = collection(this.firestore, "pacientes");
+
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
+  getAdmins(): Observable<any[]> {
+    const col = collection(this.firestore, "admins");
+
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
 
   getEspecialistas(): Observable<any[]> {
     const col = collection(this.firestore, "especialistas");

@@ -1,133 +1,31 @@
-import { CommonModule } from '@angular/common';import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
-import { Firestore, collection, collectionData,setDoc, DocumentData, doc, addDoc } from '@angular/fire/firestore';
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Auth, signInWithEmailAndPassword, user } from '@angular/fire/auth';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  setDoc,
+  DocumentData,
+  doc,
+  addDoc,
+} from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { orderBy, query, where } from 'firebase/firestore';
-import { Observable, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { DataService } from '../../services/authUsers/data.service';
+import { map } from 'rxjs/operators';
+import { signOut, User } from 'firebase/auth';
+import { TurnosService } from '../../services/turnos/turnos.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
-
-
-
-/*
-export class LoginComponent {
-  public email: string = '';
-  public password: string = '';
-  public mensagges = "";
-
-  loggedUser: string = "";
-
- 
-
-
-
-  private sub!: Subscription;
-
-
-
-  constructor(, private auth: Auth, private firestore: Firestore) {}
-  /*
-
-  
-
-  getData()
-  {
-    let col = collection(this.firestore, "chats");
-
-    const filteredQuery = query(
-      col, //where("user", "==", "matias.skene@gmail.com"), limit(2), orderBy("fecha", "desc")
-    );
-    
-    const observable = collectionData(filteredQuery);
-
-    this.sub = observable.subscribe((respuesta:any) => {
-      this.loginsCollection = respuesta;
-
-      console.log(respuesta);
-    })
-    
-  }
-    */
-/*
-  ngOnInit() {
-    this.chat.getMessages().subscribe(messages => {
-      this.messages = messages;
-    });
-  }
-
-  sendMessage() {
-    const message: Message = {
-      text: this.newMessage,
-      createdAt: new Date()
-    };
-    this.chat.sendMessage(message);
-    this.newMessage = '';
-  }
-
-
-  
-
-  redirectToSignIn() {
-    this.router.navigate(["/singin"]);
-  }
-  
-  dato = "datsos del padre";
-
-  recibirDato(datoHijo: string)
-  {
-    this.dato = datoHijo
-  }
-
-
-  @Output() enviarDato = new EventEmitter<string>();
-
-  datoHijo1 = "Dato del hijo 1";
-
-  enviarDatoFn()
-  {
-    this.enviarDato.emit(this.dato);
-  }
-
-  autocompletar(email: string, password: string) 
-  {
-    this.email = email;
-    this.password = password;
-  }
-
-  /*
-  login() 
-  {
-    let col = collection(this.firestore, 'logins');
-
-    let obj = { fecha: new Date(), "user": this.email}
-
-    addDoc(col, obj)
-      .then(() => {
-        console.log(this.email + "s")
-        console.log('Documento agregado con éxito');
-        console.log(this.email + "s")
-      })
-      .catch((error) => {
-        console.log(this.email + "s")
-        console.error('Error al agregar documento: ', error);
-        
-      });
-  }
-      
-
-
-  
-
-}
-*/
 export class LoginComponent {
   email: string = '';
   password: string = '';
@@ -135,67 +33,196 @@ export class LoginComponent {
 
   isLoading = false;
   flagError: boolean = false;
-  msjError: string = "";
+  msjError: string = '';
 
-  constructor(private auth: Auth, private router: Router, private userService : DataService) {}
+  role: string = '';
 
+  verficado = false;
 
-  loginUser()
-  {
-    signInWithEmailAndPassword(this.auth, this.email, this.password).then((res) => 
-    {
-      if ( res.user.email !== null)
-      {
-        this.isLoading = true;
-        setTimeout(() => {
+  constructor(
+    private auth: Auth,
+    private router: Router,
+    private userService: DataService,
+    private firestore: Firestore,
+    private turnos: TurnosService,
+  ) {}
+
+  loginUser() {
+    signInWithEmailAndPassword(this.auth, this.email, this.password)
+      .then((res) => {
+        if (res.user.email !== null) {
+          this.isLoading = true;
           this.userService.setUser(this.email);
           this.isLoading = false;
-          this.router.navigate(["/home"]);
-        }, 1000);
-      } 
+  
+          // Llamar a verificarRoles después de hacer login
+          this.verificarRoles();
+  
+          // Esperar a que el rol se haya asignado
+          setTimeout(() => {
+            if (this.role !== '') {
+              console.log(this.role)
+              this.router.navigate(['/home']);
+            } else {
+              
+              this.verificarAdmin();
 
-      this.flagError = false;
-    }).catch((e) => {
-      this.flagError = true;
-      console.log(e);
+              if (res.user.emailVerified && this.verficado) {
+                this.actualizarEstadoVerificacion(res.user);
+                this.router.navigate(['/home']);
+              } else {
+                this.msjError = 'Por favor verifica tu correo electrónico.';
+                console.log('El usuario no está verificado por mail');
+                this.flagError = true;
+              }
 
-      switch(e.code)
-      {
-        case "auth/weak-password":
-          this.msjError = "Contraseña demasiado corta.";
-          break;
-        case "auth/invalid-email":
-          this.msjError = "Correo electrónico no válido.";
-          break;
-        case "auth/email-already-in-use":
-          this.msjError = "El correo electrónico ya está en uso.";
-          break;
-        case "auth/user-not-found":
-          this.msjError = "No se encontró ningún usuario con este correo.";
-          break;
-        case "auth/wrong-password":
-          this.msjError = "Credenciales Invalidas.";
-          break;
-        case "auth/invalid-credential":
-          this.msjError = "Credenciales no válidas.";
-          break;
-        case "auth/account-exists-with-different-credential":
-          this.msjError = "Ya existe una cuenta con un correo diferente.";
-          break;
-        case "auth/credential-already-in-use":
-          this.msjError = "Estas credenciales ya están en uso por otra cuenta.";
-          break;
-        default:
-          this.msjError = "Error: " + e.code;
-          break;
-      }
-    })
+              this.flagError = true;
+              this.msjError = 'El usuario no esta verificado.';
+            }
+          }, 1000); // Ajusta el tiempo según sea necesario
+        }
+      })
+      .catch((e) => {
+        this.flagError = true;
+        this.handleLoginError(e);
+      });
   }
 
-  autocompletar(email: string, password: string) 
-  {
+  handleLoginError(error: any) {
+    console.log(error);
+    switch (error.code) {
+      case 'auth/weak-password':
+        this.msjError = 'Contraseña demasiado corta.';
+        break;
+      case 'auth/invalid-email':
+        this.msjError = 'Correo electrónico no válido.';
+        break;
+      case 'auth/email-already-in-use':
+        this.msjError = 'El correo electrónico ya está en uso.';
+        break;
+      case 'auth/user-not-found':
+        this.msjError = 'No se encontró ningún usuario con este correo.';
+        break;
+      case 'auth/wrong-password':
+        this.msjError = 'Credenciales Invalidas.';
+        break;
+      default:
+        this.msjError = 'Error: ' + error.code;
+        break;
+    }
+  }
+
+  autocompletar(email: string, password: string) {
     this.email = email;
     this.password = password;
   }
 
+  // Actualizar el estado de verificación del correo en Firestore
+  actualizarEstadoVerificacion(user: User) {
+    const userRef = doc(this.firestore, 'usuarios', user.uid); // Aquí estamos usando el UID del usuario para obtener el documento
+    setDoc(
+      userRef,
+      {
+        emailVerified: user.emailVerified, // Guardar el estado de verificación en Firestore
+      },
+      { merge: true },
+    )
+      .then(() => {
+        console.log('Estado de verificación actualizado en Firestore');
+      })
+      .catch((error) => {
+        console.log(
+          'Error al actualizar el estado de verificación en Firestore: ',
+          error,
+        );
+      });
+  }
+
+  async verificarAdmin() {
+    await this.verficarAdmin();
+    // Puedes agregar más verificaciones de roles aquí si es necesario
+  }
+
+  async verficarAdmin() {
+    this.turnos.getEspecialistas().subscribe(
+      (data: any[]) => {
+        this.nombresEspecialistasArray = data.map((especialista: any) => ({
+          nombre: especialista.nombre,
+          verificado: especialista.verificado,
+          email: especialista.email,
+        }));
+  
+        this.nombresFiltrados = [...this.nombresEspecialistasArray];
+  
+        this.nombresFiltrados.forEach((usuario) => {
+          if (usuario.email === this.email) {
+            if(usuario.verificado)
+            {
+              this.verficado = true;
+            }
+            else
+            {
+              this.verficado = false;
+            }
+            // Agrega la lógica necesaria aquí si necesitas hacer algo con el usuario encontrado.
+          }
+        });
+      },
+      (error) => {
+        console.error('Error al obtener especialistas:', error);
+        // Maneja el error según sea necesario.
+      }
+    );
+  }
+
+
+
+
+  nombresEspecialistasArray: any[] = [];
+  nombresFiltrados: any[] = [];
+
+  async verificarRoles() {
+    await this.verificarClientes();
+    await this.verficarAdmins();
+    // Puedes agregar más verificaciones de roles aquí si es necesario
+  }
+
+
+
+  async verificarClientes() {
+    console.log('Verificando rol para email: ' + this.email);
+  
+    this.turnos.getUsuarios().subscribe((data: any[]) => {
+      this.nombresEspecialistasArray = data.map((especialista: any) => ({
+        email: especialista.email,
+        perfil: especialista.perfil,
+      }));
+      this.nombresFiltrados = [...this.nombresEspecialistasArray];
+
+      this.nombresFiltrados.forEach((usuario) => {
+        if (usuario.email == this.email) {
+          this.role = 'paciente';
+        } 
+      });
+    });
+  }
+
+  async verficarAdmins() {
+    console.log('Verificando rol para email: ' + this.email);
+  
+    this.turnos.getAdmins().subscribe((data: any[]) => {
+      this.nombresEspecialistasArray = data.map((especialista: any) => ({
+        email: especialista.email,
+        perfil: especialista.perfil,
+      }));
+      this.nombresFiltrados = [...this.nombresEspecialistasArray];
+
+      this.nombresFiltrados.forEach((usuario) => {
+        if (usuario.email == this.email) {
+          this.role = 'admin';
+        } 
+      });
+    });
+  }
+  
 }

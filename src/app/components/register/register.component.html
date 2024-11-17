@@ -1,157 +1,358 @@
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LcnZ3wqAAAAAKAUx4LId10OgnDLNPrwTr_zhPmM"></script>
+
 <div class="container mt-5">
-    <div class="card">
-        <div class="card-body">
-            <h2 class="card-title text-center">Registro</h2>
-            <form id="registerForm" [formGroup]="form">
-                
-                <!-- Selección de Rol -->
-                <div class="mb-3">
-                    <label for="role" class="form-label">Elija su rol:</label>
-                    <select class="form-select" id="role" formControlName="role" (change)="onRoleChange($event)">
-                        <option value="" disabled selected>Seleccione una opción</option>
-                        <option value="admin">Admin</option>
-                        <option value="cliente">Cliente</option>
-                        <option value="empleado">Especialista</option>
-                    </select>
-                </div>
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title text-center">Registro {{ rol }}</h2>
 
-                <!-- Registro-->
-                <div class="container mt-5" *ngIf="role">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title text-center">{{role.value}}</h2>
-                            
-                            <!-- Nombre -->
-                            <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre:</label>
-                                <input type="text" class="form-control" id="nombre" formControlName="nombre" required>
-                                <ng-container *ngIf="form.get('nombre')?.hasError('pattern') && form.get('nombre')?.touched">
-                                    <small class="text-danger">El nombre solo puede contener letras</small>
-                                </ng-container>
-                                <ng-container *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched">
-                                    <small class="text-danger">El nombre es requerido</small>
-                                </ng-container>
-                            </div>
-                            
-                            <!-- Apellido -->
-                            <div class="mb-3">
-                                <label for="apellido" class="form-label">Apellido:</label>
-                                <input type="text" class="form-control" id="apellido" formControlName="apellido" required>
-                                <ng-container *ngIf="form.get('apellido')?.hasError('pattern') && form.get('apellido')?.touched">
-                                    <small class="text-danger">El apellido solo puede contener letras</small>
-                                </ng-container>
-                                <ng-container *ngIf="form.get('apellido')?.hasError('required') && form.get('apellido')?.touched">
-                                    <small class="text-danger">El apellido es requerido</small>
-                                </ng-container>
-                            </div>
-
-                            <!-- Edad -->
-                            <div class="mb-3 col-md-6">
-                                <label for="edad" class="form-label">Edad:</label>
-                                <input type="number" class="form-control" id="edad" formControlName="edad" required>
-                                <ng-container *ngIf="form.get('edad')?.hasError('max') && form.get('edad')?.touched">
-                                    <small class="text-danger">Debe ser menor de 99</small>
-                                </ng-container>
-                                <ng-container *ngIf="form.get('edad')?.hasError('required') && form.get('edad')?.touched">
-                                    <small class="text-danger">La edad es requerida</small>
-                                </ng-container>
-                            </div>
-
-                            <!-- DNI -->
-                            <div class="mb-3 col-md-6">
-                                <label for="dni" class="form-label">Número de DNI:</label>
-                                <input type="text" class="form-control" id="dni" formControlName="dni" required>
-                                <ng-container *ngIf="form.get('dni')?.hasError('pattern') && form.get('dni')?.touched">
-                                    <small class="text-danger">Debe contener solo números</small>
-                                </ng-container>
-                                <ng-container *ngIf="form.get('dni')?.hasError('maxlength') && form.get('dni')?.touched">
-                                    <small class="text-danger">No debe superar los 10 caracteres</small>
-                                </ng-container>
-                                <ng-container *ngIf="form.get('dni')?.hasError('required') && form.get('dni')?.touched">
-                                    <small class="text-danger">El DNI es requerido</small>
-                                </ng-container>
-                            </div>
-
-                            <!-- Correo Electrónico -->
-                            <div class="mb-3">
-                                <label for="mail" class="form-label">Correo Electrónico:</label>
-                                <input type="text" class="form-control" id="mail" formControlName="mail" required>
-                                <ng-container *ngIf="form.get('mail')?.hasError('pattern') && form.get('mail')?.touched">
-                                    <small class="text-danger">El correo electrónico es inválido</small>
-                                </ng-container>
-                                <ng-container *ngIf="form.get('mail')?.hasError('required') && form.get('mail')?.touched">
-                                    <small class="text-danger">El correo electrónico es requerido</small>
-                                </ng-container>
-                            </div>
-
-                            <!-- Clave -->
-                            <div class="mb-3">
-                                <label for="clave" class="form-label">Clave:</label>
-                                <input type="text" class="form-control" id="clave" formControlName="clave" required>
-                                <ng-container *ngIf="form.get('clave')?.hasError('pattern') && form.get('clave')?.touched">
-                                    <small class="text-danger">La clave solo puede contener letras</small>
-                                </ng-container>
-                                <ng-container *ngIf="form.get('clave')?.hasError('required') && form.get('clave')?.touched">
-                                    <small class="text-danger">La clave es requerida</small>
-                                </ng-container>
-                            </div>
-
-                            <!-- Registro Cliente -->
-                            <div *ngIf="role.value === 'cliente'">
-                                <div class="mb-3">
-                                    <label for="obrasocial" class="form-label">Obra Social:</label>
-                                    <input type="text" class="form-control" id="obrasocial" formControlName="obrasocial">
-                                    <ng-container *ngIf="form.get('obrasocial')?.hasError('pattern') && form.get('obrasocial')?.touched">
-                                        <small class="text-danger">La obra social solo puede contener letras</small>
-                                    </ng-container>
-                                    <ng-container *ngIf="form.get('obrasocial')?.hasError('required') && form.get('obrasocial')?.touched">
-                                        <small class="text-danger">La obra social es requerida</small>
-                                    </ng-container>
-                                </div>
-                            </div>
-
-                            <!-- Especialidades dinámicas -->
-                            <div *ngIf="role.value === 'empleado'">
-                                <label>Seleccione Especialidades:</label>
-
-                                <div class="col-sm-10">
-                                    <select name="Departamente" (change)="changeDepartament($event)" class="form-control">
-                                        <option>--Select--</option>
-                                        <option *ngFor="let dep of DepartamentList">
-                                            {{dep}}
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <br> 
-                                
-                                <div class="col-sm-10" *ngIf="otro">
-                                    <select name="Departamente" (change)="changeDepartament($event)" class="form-control">
-                                        <option>--Select--</option>
-                                        <option *ngFor="let dep of DepartamentList">
-                                            {{dep}}
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <!-- Botón para agregar una nueva especialidad -->
-                                <button *ngIf="otro == false" type="button" class="btn btn-secondary mt-2" (click)="addEspecialidad()">Agregar Especialidad</button>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <!-- Botón Enviar -->
-                <button type="submit" class="btn btn-primary w-100" (click)="enviar()">Enviar</button>
-
-                <!-- Mensaje de error -->
-                <div *ngIf="flagError == true" class="alert alert-danger mt-3" role="alert">{{ resultado }}</div>
-                <div *ngIf="flagSuccess == true" class="alert alert-success mt-3" role="alert">{{ resultado }}</div>
-            </form>
+      <div
+        class="container d-flex justify-content-center align-items-center"
+        *ngIf="eleccion == false"
+      >
+        <div class="row text-center">
+          <!-- Botón Paciente -->
+          <div class="col-6" (click)="onRoleChange('admin')">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/pacientelogo.png?alt=media&token=7f50f010-a333-4edd-9485-828f58cb6393"
+              alt="Paciente"
+              class="img-fluid rounded"
+              style="width: 150px; height: 150px"
+            />
+            <p class="mt-2">Paciente</p>
+          </div>
+          <!-- Botón Especialista -->
+          <div class="col-6" (click)="onRoleChange('especialista')">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/especialistalogo.png?alt=media&token=a106d99d-90a7-4fa2-81ae-9356436cf7f0"
+              alt="Especialista"
+              class="img-fluid rounded"
+              style="width: 150px; height: 150px"
+            />
+            <p class="mt-2">Especialista</p>
+          </div>
         </div>
+      </div>
+
+      <form id="registerForm" [formGroup]="form" *ngIf="eleccion == true">
+        <!-- Registro-->
+        <div class="container mt-5">
+          <div class="card">
+            <div class="card-body">
+              <!-- Nombre -->
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombre"
+                  formControlName="nombre"
+                  required
+                />
+                <ng-container
+                  *ngIf="
+                    form.get('nombre')?.hasError('pattern') &&
+                    form.get('nombre')?.touched
+                  "
+                >
+                  <small class="text-danger"
+                    >El nombre solo puede contener letras</small
+                  >
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    form.get('nombre')?.hasError('required') &&
+                    form.get('nombre')?.touched
+                  "
+                >
+                  <small class="text-danger">El nombre es requerido</small>
+                </ng-container>
+              </div>
+
+              <!-- Apellido -->
+              <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="apellido"
+                  formControlName="apellido"
+                  required
+                />
+                <ng-container
+                  *ngIf="
+                    form.get('apellido')?.hasError('pattern') &&
+                    form.get('apellido')?.touched
+                  "
+                >
+                  <small class="text-danger"
+                    >El apellido solo puede contener letras</small
+                  >
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    form.get('apellido')?.hasError('required') &&
+                    form.get('apellido')?.touched
+                  "
+                >
+                  <small class="text-danger">El apellido es requerido</small>
+                </ng-container>
+              </div>
+
+              <!-- Edad -->
+              <div class="mb-3 col-md-6">
+                <label for="edad" class="form-label">Edad:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="edad"
+                  formControlName="edad"
+                  required
+                />
+                <ng-container
+                  *ngIf="
+                    form.get('edad')?.hasError('max') &&
+                    form.get('edad')?.touched
+                  "
+                >
+                  <small class="text-danger">Debe ser menor de 99</small>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    form.get('edad')?.hasError('required') &&
+                    form.get('edad')?.touched
+                  "
+                >
+                  <small class="text-danger">La edad es requerida</small>
+                </ng-container>
+              </div>
+
+              <!-- DNI -->
+              <div class="mb-3 col-md-6">
+                <label for="dni" class="form-label">Número de DNI:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="dni"
+                  formControlName="dni"
+                  required
+                />
+                <ng-container
+                  *ngIf="
+                    form.get('dni')?.hasError('pattern') &&
+                    form.get('dni')?.touched
+                  "
+                >
+                  <small class="text-danger">Debe contener solo números</small>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    form.get('dni')?.hasError('maxlength') &&
+                    form.get('dni')?.touched
+                  "
+                >
+                  <small class="text-danger"
+                    >No debe superar los 10 caracteres</small
+                  >
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    form.get('dni')?.hasError('required') &&
+                    form.get('dni')?.touched
+                  "
+                >
+                  <small class="text-danger">El DNI es requerido</small>
+                </ng-container>
+              </div>
+
+              <!-- Correo Electrónico -->
+              <div class="mb-3">
+                <label for="mail" class="form-label">Correo Electrónico:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mail"
+                  formControlName="mail"
+                  required
+                />
+                <ng-container
+                  *ngIf="
+                    form.get('mail')?.hasError('pattern') &&
+                    form.get('mail')?.touched
+                  "
+                >
+                  <small class="text-danger"
+                    >El correo electrónico es inválido</small
+                  >
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    form.get('mail')?.hasError('required') &&
+                    form.get('mail')?.touched
+                  "
+                >
+                  <small class="text-danger"
+                    >El correo electrónico es requerido</small
+                  >
+                </ng-container>
+              </div>
+
+              <!-- Clave -->
+              <div class="mb-3">
+                <label for="clave" class="form-label">Clave:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="clave"
+                  formControlName="clave"
+                  required
+                />
+                <ng-container
+                  *ngIf="
+                    form.get('clave')?.hasError('pattern') &&
+                    form.get('clave')?.touched
+                  "
+                >
+                  <small class="text-danger"
+                    >La clave solo puede contener letras</small
+                  >
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    form.get('clave')?.hasError('required') &&
+                    form.get('clave')?.touched
+                  "
+                >
+                  <small class="text-danger">La clave es requerida</small>
+                </ng-container>
+              </div>
+
+              <!-- Registro Cliente -->
+              <div *ngIf="rol === 'cliente'">
+                <div class="mb-3">
+                  <label for="obrasocial" class="form-label"
+                    >Obra Social:</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="obrasocial"
+                    formControlName="obrasocial"
+                  />
+                  <ng-container
+                    *ngIf="
+                      form.get('obrasocial')?.hasError('pattern') &&
+                      form.get('obrasocial')?.touched
+                    "
+                  >
+                    <small class="text-danger"
+                      >La obra social solo puede contener letras</small
+                    >
+                  </ng-container>
+                  <ng-container
+                    *ngIf="
+                      form.get('obrasocial')?.hasError('required') &&
+                      form.get('obrasocial')?.touched
+                    "
+                  >
+                    <small class="text-danger"
+                      >La obra social es requerida</small
+                    >
+                  </ng-container>
+                </div>
+              </div>
+
+              <!-- specialties.component.html -->
+              <div class="container mt-5">
+                <h1 class="text-center mb-2">
+                  Seleccione Especialidades Clínicas
+                </h1>
+                <form (ngSubmit)="guardarEspecialidades()">
+                  <!-- Opciones de Especialidades -->
+                  <div
+                    class="form-check"
+                    *ngFor="let especialidad of especialidades"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [value]="especialidad"
+                      [id]="especialidad"
+                      [(ngModel)]="especialidadesSeleccionadas[especialidad]"
+                      name="especialidades"
+                    />
+                    <label class="form-check-label" [for]="especialidad">{{
+                      especialidad
+                    }}</label>
+                  </div>
+
+                  <!-- Campo para escribir si "Otra" es seleccionada -->
+                  <div
+                    *ngIf="especialidadesSeleccionadas['Otra']"
+                    class="form-group mt-3"
+                  >
+                    <label for="otraEspecialidad"
+                      >Especifique otra especialidad:</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="otraEspecialidad"
+                      [(ngModel)]="otraEspecialidad"
+                      name="otraEspecialidad"
+                      placeholder="Ingrese su especialidad"
+                    />
+                  </div>
+
+                  <!-- Botón de Guardar -->
+                  <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">
+                      Guardar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br />
+
+        <div class="d-flex justify-content-center align-items-center">
+          <ngx-recaptcha2
+            #captchaElem
+            [siteKey]="sitekey"
+            formControlName="recaptcha"
+          >
+          </ngx-recaptcha2>
+        </div>
+
+        <div *ngIf="form.get('recaptcha')?.hasError('required') && form.get('recaptcha')?.touched" class="text-danger">
+            El reCAPTCHA es obligatorio.
+        </div>
+
+        <br />
+
+        <!-- Botón Enviar -->
+        <button type="submit" class="btn btn-primary w-100" (click)="enviar()">
+          Enviar
+        </button>
+
+        <!-- Mensaje de error -->
+        <div
+          *ngIf="flagError == true"
+          class="alert alert-danger mt-3"
+          role="alert"
+        >
+          {{ resultado }}
+        </div>
+        <div
+          *ngIf="flagSuccess == true"
+          class="alert alert-success mt-3"
+          role="alert"
+        >
+          {{ resultado }}
+        </div>
+      </form>
     </div>
+  </div>
 </div>

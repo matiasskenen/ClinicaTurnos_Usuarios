@@ -8,6 +8,7 @@ import { AdminComponent } from './components/turnos/admin/admin.component';
 import { PacientePerfilComponent } from './components/perfiles/paciente/paciente-perfil/paciente-perfil.component';
 import { EspecialistaPerfilComponent } from './components/perfiles/especialista/especialista-perfil/especialista-perfil.component';
 import { AdminPerfilComponent } from './components/perfiles/admin/admin-perfil/admin-perfil.component';
+import { SeccionusuariosComponent } from './components/seccionusuarios/seccionusuarios.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: "full" },
@@ -28,6 +29,8 @@ export const routes: Routes = [
         path: 'turnos',
         loadChildren: () => import('./components/turnos/pacientes/turnos-pacientes/turnos-pacientes.module').then(m => m.TurnosPacientesModule)
     },
+
+    { path: 'seccionusuarios', component: SeccionusuariosComponent },
     
     
 ];

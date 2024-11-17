@@ -20,22 +20,22 @@
         </div>
       </div>
     
-      <!-- Mostrar las especialidades filtradas -->
-      <div *ngIf="especialidadesFiltradas.length > 0">
-          <h3 class="text-center mb-3">Especialidades Disponibles</h3>
-          <div class="row justify-content-center">
-          <!-- Iterar sobre cada grupo de especialidades filtradas -->
-          <div *ngFor="let grupoEspecialidades of especialidadesFiltradas" class="col-md-4 mb-3">
-              <!-- Iterar sobre cada especialidad dentro del grupo -->
-              <div *ngFor="let especialidad of grupoEspecialidades" class="card shadow-sm mb-2">
-              <div class="card-body text-center">
-                  <p class="card-text">Especialidad: {{ especialidad }}</p>
-                  <span class="badge bg-success">Disponible</span>
-              </div>
-              </div>
+<!-- Mostrar especialidades filtradas -->
+<div *ngIf="nombresFiltrados.length > 0">
+  <h3 class="text-center mb-3">Especialistas Disponibles</h3>
+  <div class="row justify-content-center">
+    <div *ngFor="let especialista of nombresFiltrados" class="col-md-4 mb-3">
+      <div *ngFor="let especialidad of especialista.especialidad" class="mb-3">
+        <div class="card shadow-sm" (click)="seleccionarEspecialista(especialista)">
+          <div class="card-body text-center">
+            <p class="card-text">Especialidad: {{ especialidad }}</p>
+            <span class="badge bg-success">Disponible</span>
           </div>
-          </div>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
     
     
       <!-- Mostrar los nombres de especialistas filtrados -->
@@ -46,7 +46,6 @@
             <div class="card shadow-sm" (click)="seleccionarEspecialista(especialista)">
               <div class="card-body text-center">
                 <h5 class="card-title">{{ especialista.nombre }}</h5>
-                <p class="card-text">Especialidad: {{ especialista.especialidad }}</p>
                 <span class="badge bg-success">Disponible</span>
               </div>
             </div>

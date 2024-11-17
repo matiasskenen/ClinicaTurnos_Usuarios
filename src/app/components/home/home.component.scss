@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+    height: 93vh;
+  }
+  .background {
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/clinicahome2.jpg?alt=media&token=0df46f9e-0b90-471f-8e36-7225420a3c86');
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .content {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
