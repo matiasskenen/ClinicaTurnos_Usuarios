@@ -3,48 +3,30 @@ Descripción del Proyecto
 Este sistema ha sido desarrollado para cubrir las necesidades de la Clínica OnLine, la cual se especializa en salud y cuenta con consultorios, laboratorios y una sala de espera general.
 A través de este sistema, los pacientes pueden solicitar turnos con profesionales de diversas especialidades, quienes tienen la capacidad de administrar sus horarios y especialidades. Además, el sistema permite gestionar usuarios (Pacientes, Especialistas y Administradores), así como la visualización y gestión de turnos.
 
-Características Generales
-Registro de Usuarios: Pacientes, Especialistas y Administradores.
-Gestión de Turnos: Solicitud, cancelación, aceptación y finalización de turnos.
-Perfiles de Usuario: Visualización de datos personales y la gestión de horarios en el caso de los Especialistas.
-Historia Clínica: Registro y visualización de las atenciones realizadas a los pacientes.
-Captcha: Verificación de captcha en el registro y operaciones críticas.
-Transiciones Animadas: Navegación con animaciones entre componentes.
 
-Pacientes:
-Nombre, Apellido, Edad, DNI, Obra Social, Email, Contraseña, Imágenes de perfil.
+![2](https://github.com/user-attachments/assets/53c2d203-97cb-4343-b6b5-a09d367fde79)
+Apartado Iniciar Seccion con usuarios Autocompletados
 
-Especialistas:
-Nombre, Apellido, Edad, DNI, Especialidad (pueden tener más de una), Email, Contraseña, Imagen de perfil.
-Validación: Todos los campos se validan adecuadamente y los Especialistas deben ser aprobados por un Administrador antes de poder ingresar al sistema.
 
-3. Login de Usuarios
-Acceso al sistema mediante Email y Contraseña. Los perfiles de Especialistas deben estar aprobados y ambos (Pacientes y Especialistas) deben verificar su Email.
+Apartado Registro
+![3](https://github.com/user-attachments/assets/df552fcf-4143-4016-be15-0ce0e1484a1f)
+Al registrarse aparecen dos opciones, paciente o especialista.
+Diferentes formularios y validaciones
 
-4. Gestión de Usuarios (Solo Administrador)
-El Administrador puede:
+![4](https://github.com/user-attachments/assets/ddf3d0b4-e9d0-4def-b714-f6b97e65a595)
+Formulario con especialidades y Captcha incorporado
 
-Ver información detallada de los usuarios.
-Habilitar/Inhabilitar Especialistas.
-Crear nuevos usuarios, incluidos Administradores.
+Manejo de turnos
+![5](https://github.com/user-attachments/assets/51d195c4-e5e0-4c83-9822-4b9be8c99d29)
+El especialista puede cancelar, comentar, rechazar, aceptar los turnos.
 
-5. Gestión de Turnos
-Pacientes
-Mis Turnos: Los pacientes pueden visualizar los turnos que solicitaron, filtrarlos por Especialidad y Especialista, y realizar las siguientes acciones:
-Cancelar Turno: Si el turno no ha sido realizado.
-Ver Reseña: Si hay una reseña cargada.
-Completar Encuesta: Si el turno fue realizado.
-Calificar Atención: Si el turno fue completado.
+![6](https://github.com/user-attachments/assets/4a9c7ba8-cadc-454e-be2f-11bb65899e57)
+Los turnos se crean en base a la confirguracion del especialista.
 
-Especialistas
-Mis Turnos: Los especialistas pueden visualizar los turnos asignados, filtrarlos por Especialidad y Paciente, y realizar las siguientes acciones:
-Aceptar/Rechazar Turno.
-Finalizar Turno: Con la posibilidad de cargar una reseña y diagnóstico.
-Administrador
-Turnos: El Administrador puede gestionar todos los turnos de la clínica, filtrarlos y cancelarlos si es necesario.
-7. Solicitar Turno
-Disponible tanto para Pacientes como para el Administrador. Los pacientes seleccionan la especialidad, especialista, y el horario disponible dentro de los próximos 15 días.
+Apartado Paciente
+![7](https://github.com/user-attachments/assets/b6bab0e6-4184-493c-a6cc-91e93c6ef707)
+Recibe la informacion para solicitar sus turnos o crear un nuevo
 
-8. Mi Perfil
-Cada usuario puede ver y editar sus datos personales. Los Especialistas pueden además gestionar su disponibilidad horaria y especialidades.
+Creacion de turnos
+![8](https://github.com/user-attachments/assets/4129a2e1-33ad-483a-bb01-81a0bc3f92c9)
 
