@@ -16,9 +16,7 @@
 <div *ngIf="nombresEspecialistasArray.length > 0">
     <ul class="list-group mt-3">
       <li *ngFor="let turno of nombresEspecialistasArray" class="list-group-item">
-
-        <h3>{{turno.especialidad}}</h3>
-        <strong>{{ turno.paciente }}</strong> - {{ turno.horario }}
+        <strong>{{ turno.especialista }}</strong> - {{ turno.especialidad }} - {{ turno.horario }}
         <button class="btn btn-primary btn-sm float-right">Seleccionar Turno</button>
       </li>
     </ul>

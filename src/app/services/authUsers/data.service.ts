@@ -6,9 +6,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class DataService {
 
+  private userVerificado = new BehaviorSubject<boolean>(false);
+  userVerificado$ = this.userVerificado.asObservable(); // Observable para escuchar cambios
+
   private userSource = new BehaviorSubject<any>(null); // Inicializamos con null
   currentUser = this.userSource.asObservable();
   user : string = "";
+
   constructor() {}
 
   setUser(user: any) {
@@ -26,4 +30,11 @@ export class DataService {
 
   }
 
+  setUserVerificado(value: boolean): void {
+    this.userVerificado.next(value);
+  }
+
+  getVerificado(): boolean {
+    return this.userVerificado.getValue();
+  }
 }

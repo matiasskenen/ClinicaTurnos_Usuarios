@@ -1,0 +1,63 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 w-50">
+      <div class="card-body">
+        <!-- Select para escoger una especialidad -->
+        <div class="form-group">
+          <label for="especialidadSelect">Seleccione una Especialidad</label>
+          <select id="especialidadSelect" class="form-control" (change)="mostrarEspecialistasPorEspecialidad($event)">
+            <option value="" disabled selected>Seleccione una Especialidad</option>
+            <option *ngFor="let especialidad of especialidades" [value]="especialidad">
+              {{ especialidad }}
+            </option>
+          </select>
+        </div>
+  
+        <!-- Lista de especialistas -->
+        <div *ngIf="nombresFiltrados.length > 0">
+          <ul class="list-group mt-3">
+            <label for="turnoSelect">Especialista</label>
+            <li *ngFor="let especialista of nombresFiltrados" class="list-group-item" (click)="seleccionarEspecialista(especialista)">
+              {{ especialista.nombre }}
+            </li>
+          </ul>
+        </div>
+  
+        <!-- Mensaje en caso de no haber especialistas filtrados -->
+        <div *ngIf="nombresFiltrados.length === 0 && especialidadSeleccionada" class="alert alert-warning mt-3">
+          <strong>¡Atención!</strong> No hay especialistas disponibles para la especialidad seleccionada.
+        </div>
+  
+        <br>
+        <!-- Información del especialista seleccionado -->
+        <div *ngIf="especialista.nombre">
+          <!-- Select para elegir un turno -->
+          <div *ngIf="turnosDisponibles.length > 0">
+            <label for="turnoSelect">Seleccione un turno</label>
+            <select id="turnoSelect" class="form-control" [(ngModel)]="turnoSeleccionado">
+              <option *ngFor="let turno of turnosDisponibles" [value]="turno">
+                {{ turno }}
+              </option>
+            </select>
+          </div>
+          
+          <!-- Mostrar el turno seleccionado -->
+          <div *ngIf="turnoSeleccionado">
+            <p class="mt-3">Turno seleccionado: {{ turnoSeleccionado }}</p>
+          </div>
+  
+          <button (click)="seleccionarTurno(turnoSeleccionado)">Guardar</button>
+  
+          <!-- Mensaje si no hay turnos disponibles -->
+          <div *ngIf="turnosDisponibles.length === 0" class="alert alert-warning mt-3">
+            <strong>¡Atención!</strong> No hay turnos disponibles en el horario de este especialista.
+          </div>
+        </div>
+  
+        <!-- Mensaje de éxito temporal -->
+        <div *ngIf="mensajeExito" class="alert alert-success mt-3">
+          <strong>¡Éxito!</strong> El turno fue guardado correctamente.
+        </div>
+      </div>
+    </div>
+  </div>
+  

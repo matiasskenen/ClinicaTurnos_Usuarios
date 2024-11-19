@@ -48,36 +48,51 @@ export class LoginComponent {
   ) {}
 
   loginUser() {
+    this.userService.setUserVerificado(false);
     signInWithEmailAndPassword(this.auth, this.email, this.password)
       .then((res) => {
         if (res.user.email !== null) {
           this.isLoading = true;
-          this.userService.setUser(this.email);
-          this.isLoading = false;
-  
           // Llamar a verificarRoles después de hacer login
           this.verificarRoles();
+          this.verificarAdmin();
   
           // Esperar a que el rol se haya asignado
           setTimeout(() => {
             if (this.role !== '') {
+              this.userService.setUser(this.email);
               console.log(this.role)
+              this.userService.setUserVerificado(true);
               this.router.navigate(['/home']);
             } else {
-              
-              this.verificarAdmin();
 
-              if (res.user.emailVerified && this.verficado) {
-                this.actualizarEstadoVerificacion(res.user);
-                this.router.navigate(['/home']);
-              } else {
-                this.msjError = 'Por favor verifica tu correo electrónico.';
-                console.log('El usuario no está verificado por mail');
-                this.flagError = true;
-              }
+              console.log(res.user.emailVerified)
+              console.log(this.verficado)
 
-              this.flagError = true;
-              this.msjError = 'El usuario no esta verificado.';
+              if (res.user.emailVerified)
+                {
+                  if(this.verficado)
+                  {
+                    this.userService.setUser(this.email);
+                    this.actualizarEstadoVerificacion(res.user);
+                    this.router.navigate(['/home']);
+                    this.userService.setUserVerificado(true);
+                  
+                  }
+                  else
+                  {
+                    this.msjError = 'El usuario No esta verficiado por Admin.';
+                    console.log('El usuario no está verificado por Admin');
+                    this.flagError = true;
+                  }
+                }
+                else
+                {
+                  this.msjError = 'El usuario no esta verficiado por mail.';
+                  console.log('El usuario no está verificado por mail');
+                  this.flagError = true;
+                }  
+                
             }
           }, 1000); // Ajusta el tiempo según sea necesario
         }
@@ -86,11 +101,16 @@ export class LoginComponent {
         this.flagError = true;
         this.handleLoginError(e);
       });
+
+
   }
 
   handleLoginError(error: any) {
     console.log(error);
     switch (error.code) {
+      case 'auth/invalid-credential':
+        this.msjError = 'Credenciales Incorrectas';
+        break;
       case 'auth/weak-password':
         this.msjError = 'Contraseña demasiado corta.';
         break;
@@ -156,13 +176,15 @@ export class LoginComponent {
   
         this.nombresFiltrados.forEach((usuario) => {
           if (usuario.email === this.email) {
-            if(usuario.verificado)
+            if(usuario.verificado == true)
             {
               this.verficado = true;
+              console.log("verificado por admin")
             }
             else
             {
               this.verficado = false;
+              console.log("no verificado por admin")
             }
             // Agrega la lógica necesaria aquí si necesitas hacer algo con el usuario encontrado.
           }

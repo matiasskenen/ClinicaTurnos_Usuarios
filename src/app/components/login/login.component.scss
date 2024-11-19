@@ -4,15 +4,13 @@
   padding: 2rem;
 }
 
-.card-body {
-  background-color: #f8f9fa;
-}
+
 
 /* Encabezado del formulario */
 .card-title {
   font-weight: 700;
   font-size: 1.8rem;
-  color: #007bff;  /* Color azul de la clínica */
+  color: #084381;  /* Color azul de la clínica */
 }
 
 /* Botón */
@@ -39,5 +37,6 @@ input.form-control {
 }
 
 body {
-  background-color: #f0f8ff;
+  background-color: #1f69aa;
+  height: 90vh;
 }

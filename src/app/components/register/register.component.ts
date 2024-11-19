@@ -126,6 +126,7 @@ export class RegisterComponent {
       console.log('Formulario enviado', this.form.value);
       this.sendUser();
       this.form.reset();
+      this.auth.signOut();
       this.resultado = 'El formulario Enviado';
       this.flagSuccess = true;
       this.router.navigate(['/home']);

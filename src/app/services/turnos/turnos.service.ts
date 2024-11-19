@@ -59,4 +59,39 @@ export class TurnosService {
     return collectionData(filteredQuery); // Retorna el observable
   }
 
+
+  sendturno(paciente : string, especialista : string, especialidad : string, horario : string, email : string) 
+    {
+      let col = collection(this.firestore, "turnos");
+
+      let obj = { 
+        paciente: paciente,
+        especialista: especialista,
+        especialidad: especialidad,
+        horario: horario,
+        emailEspecialsita : email
+      };
+
+
+
+      addDoc(col, obj)
+        .then(() => {
+          console.log('turno agregado con éxito');
+        })
+        .catch((error) => {
+          console.error('Error al agregar turno: ', error);
+        });
+
+    }
+
+    getTurnos(): Observable<any[]> {
+      const col = collection(this.firestore, "turnos");
+  
+      const filteredQuery = query(
+        col
+      );
+  
+      return collectionData(filteredQuery); // Retorna el observable
+    }
+
 }

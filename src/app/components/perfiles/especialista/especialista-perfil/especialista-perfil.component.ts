@@ -22,7 +22,7 @@ export class EspecialistaPerfilComponent {
 
   }
 
-  DepartamentList = ["9:00 a 18:00", "7:00 a 15:000"]
+  DepartamentList = ["9:00 a 17:00", "7:00 a 15:00"]
 
   horario : any;
   user : any;
@@ -30,13 +30,20 @@ export class EspecialistaPerfilComponent {
 
   changeDepartament(e:any)
   {
-    this.horario = e.target.value
+    if(e.target.value == "9:00 a 17:00")
+    {
+      this.horario = "9/17"
+    }
+    else
+    {
+      this.horario = "7/15"
+    }
 
   }
 
   saveDataHorario()
   {
-    this.userService.ingresarHorario(this.horario)
+    this.userService.ingresarHorario(this.authService.getUser(), this.horario)
   }
 
   checkUser()

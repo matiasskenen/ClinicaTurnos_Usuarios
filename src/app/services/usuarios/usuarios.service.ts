@@ -107,10 +107,10 @@ export class UsuariosService {
     }
 
 
-    ingresarHorario(horario : string)
+    ingresarHorario(especialista : string, horario : string)
     {
       // Suponiendo que deseas buscar por email
-      const nombreBuscado = "juan@gmail.com"; // Cambia esto con el email que buscas
+      const nombreBuscado = especialista; // Cambia esto con el email que buscas
 
       // Crear una referencia a la colección
       const coleccionRef = collection(this.firestore, "especialistas");

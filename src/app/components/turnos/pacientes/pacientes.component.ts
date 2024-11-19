@@ -2,21 +2,36 @@ import { Component } from '@angular/core';
 import { TurnosService } from '../../../services/turnos/turnos.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DetalleTurnoComponent } from './turnos-pacientes/components/detalle-turno/detalle-turno.component';
+import { DetalleTurnoComponent } from './turnos-pacientes/detalle-turno/detalle-turno.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule, DetalleTurnoComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './pacientes.component.html',
   styleUrl: './pacientes.component.scss'
 })
 export class PacientesComponent {
 
-  constructor(private turnos: TurnosService) {
+  constructor(private turnos: TurnosService, private router : Router) {
     this.dataEspecialidades();
     this.dataNombres();
+
   }
+
+
+  navigateTo(route: string) {
+    switch (route) {
+      case 'misturnos':
+        this.router.navigate(['/turnos/misturnos']);
+        break;
+      case 'solicitarturno':
+        this.router.navigate(['/turnos/solicitarturno']);
+        break;
+    }
+  }
+
 
   especialistaSeleccionado: any;
   especialidadSeleccionado: any;
@@ -44,6 +59,8 @@ export class PacientesComponent {
     this.especialidadesFiltradas = this.especialidadesArray.filter((especialidad: string) =>
       String(especialidad).toLowerCase().includes(filtro)  // Convertimos a string antes de hacer toLowerCase()
     );
+    console.log(this.especialidadesArray)
+    console.log(this.especialidadesFiltradas)
   }
   
   // Filtrar nombres de especialistas
@@ -61,6 +78,8 @@ export class PacientesComponent {
       this.especialidadesArray = data.map((especialista: any) => especialista.especialista);
       this.especialidadesFiltradas = [...this.especialidadesArray];
     });
+    console.log(this.especialidadesArray)
+    console.log(this.especialidadesFiltradas)
   }
 
   dataNombres() {
