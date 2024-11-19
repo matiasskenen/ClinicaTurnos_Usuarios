@@ -1,33 +1,74 @@
 <div class="container text-center mt-5">
-    <h1 class="mb-4">Buscar Turnos</h1>
+    <h1 class="mb-4 text-primary">Buscar Turnos</h1>
+  
+    <!-- Formulario de búsqueda -->
     <div class="row justify-content-center">
-    <div class="col-md-6">
+      <div class="col-md-6">
         <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Buscar por Especialidad">
+          <input type="text" class="form-control form-control-lg shadow-sm" placeholder="Buscar por Especialidad">
         </div>
         <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Buscar por Especialista">
+          <input type="text" class="form-control form-control-lg shadow-sm" placeholder="Buscar por Especialista">
         </div>
-        <button class="btn btn-primary btn-lg w-100">Buscar</button>
+        <button class="btn btn-primary btn-lg w-100 shadow">Buscar</button>
+      </div>
     </div>
-    </div>
+  
+    <li *ngFor="let turno of nombresEspecialistasArray" class="list-group-item shadow-sm mb-3 p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="text-primary mb-1">{{ turno.especialidad }}</h4>
+            <p class="mb-1"><strong>{{ turno.paciente }}</strong> - {{ turno.horario }}</p>
+          </div>
+          <div *ngIf="turno.estado == 'pendiente'">
+            <button
+              class="btn btn-outline-success btn-sm me-2"
+              (click)="cambiarEstado('aceptado', turno)">
+              <i class="bi bi-check-circle"></i> Aceptar
+            </button>
+            <button
+              class="btn btn-outline-danger btn-sm me-2"
+              (click)="cambiarEstado('rechazado', turno)">
+              <i class="bi bi-x-circle"></i> Rechazar
+            </button>
+          </div>
 
-    <!-- Mostrar los turnos del usuario -->
-<div *ngIf="nombresEspecialistasArray.length > 0">
-    <ul class="list-group mt-3">
-      <li *ngFor="let turno of nombresEspecialistasArray" class="list-group-item">
+          <div *ngIf="turno.estado == 'aceptado'">
+            <button
+              class="btn btn-outline-danger btn-sm me-2"
+              (click)="cambiarEstado('cancelado', turno)">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </button>
+          </div>
+          <div *ngIf="turno.estado === 'cancelado' && turno.mensaje == ''">
+            <label for="razonInput" class="form-label">Razón:</label>
+            <input
+              id="razonInput"
+              type="text"
+              [(ngModel)]="turno.razon"
+              class="form-control form-control-sm"
+              placeholder="Escribe la razón aquí"
+            >
+            <button
+              class="btn btn-outline-success btn-sm mt-2"
+              (click)="cambiarMensaje(turno.razon, turno)">
+              <i class="bi bi-check-circle"></i> Enviar
+            </button>
+          </div>
+          <div *ngIf="turno.mensaje != ''">
+            <label>Estado: {{turno.estado}}</label>
+            <br>
+            <label>Comentario: {{turno.mensaje}}</label>
+          </div>
+        </div>
+        
 
-        <h3>{{turno.especialidad}}</h3>
-        <strong>{{ turno.paciente }}</strong> - {{ turno.horario }}
-        <button class="btn btn-primary btn-sm float-right">Seleccionar Turno</button>
       </li>
-    </ul>
+      
+  
+    <!-- Mensaje de no turnos disponibles -->
+    <div *ngIf="nombresEspecialistasArray.length === 0" class="alert alert-warning mt-5 shadow-sm">
+      <strong>¡Atención!</strong> No tienes turnos disponibles.
+    </div>
   </div>
   
-  <!-- Si no hay turnos disponibles para el usuario -->
-  <div *ngIf="nombresEspecialistasArray.length === 0" class="alert alert-warning mt-3">
-    <strong>¡Atención!</strong> No tienes turnos disponibles.
-  </div>
-
-
-</div>

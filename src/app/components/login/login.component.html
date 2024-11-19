@@ -52,28 +52,14 @@
               </div>
             </form>
 
-            <!-- Botones de Autocompletar -->
-            <div class="d-flex justify-content-between mt-4">
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                (click)="autocompletar('matias.skenen@gmail.com', '123456')"
-              >
-                Admin
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-success"
-                (click)="autocompletar('micaela@gmail.com', '123456')"
-              >
-                Paciente
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-warning"
-                (click)="autocompletar('mohoxi7158@gitated.com', '123456')"
-              >
-                Especialista
+            <!-- Botones de Acceso Rápido (con imágenes de perfil) -->
+            <div class="quick-access-buttons">
+              <button (click)="autocompletar(user.name, '123456')" *ngFor="let user of users" class="quick-access-btn">
+
+                <img  [src]="user.image" alt="{{ user.name }}" class="profile-img">
+
+                <div class="user-role">{{ user.role }}</div>
+
               </button>
             </div>
           </div>

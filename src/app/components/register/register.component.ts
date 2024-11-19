@@ -14,6 +14,10 @@ import {
 import { Router } from '@angular/router';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
 import { sendEmailVerification } from 'firebase/auth';
+
+import { getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
+import { Storage } from '@angular/fire/storage';
+
 declare const grecaptcha: any;
 @Component({
   selector: 'app-register',
@@ -45,11 +49,17 @@ export class RegisterComponent {
 
   sitekey : string = "6LfqMoEqAAAAAK9FQ8HZZqF3T2ZN0TClF_CgYwJv";
 
+
+  imageName: string = '';
+  selectedFile: File | null = null;
+  downloadURL: string | null = null;
+
   constructor(
     public auth: Auth,
     private router: Router,
     private fb: FormBuilder,
     private sendUsers: UsuariosService,
+    private storage : Storage
   ) {
 
     
@@ -147,25 +157,9 @@ export class RegisterComponent {
     this.eleccion = true;
     //const edadControl = this.form.get('edad') as FormControl;
 
-    if (role === 'admin') {
-      this.rol = 'admin';
-      this.adminRegister = true;
-      this.clienteRegister = false;
-      this.especialistaRegister = false;
-      //edadControl.setValidators([Validators.required, Validators.min(18), Validators.max(99)]);
-    } else if (role === 'cliente') {
-      this.rol = 'cliente';
-      this.adminRegister = false;
-      this.clienteRegister = true;
-      this.especialistaRegister = false;
-      //edadControl.setValidators([Validators.required, Validators.max(99)]);
-    } else {
-      this.rol = 'especialista';
-      this.adminRegister = false;
-      this.clienteRegister = false;
-      this.especialistaRegister = true;
-      //edadControl.clearValidators();
-    }
+    this.rol = role;
+
+    console.log(this.rol)
 
     //edadControl.updateValueAndValidity();
   }
@@ -197,7 +191,7 @@ export class RegisterComponent {
       });
 
     switch (this.rol) {
-      case 'cliente':
+      case 'paciente':
         this.sendUsers.sendPaciente(
           this.form.value.nombre,
           this.form.value.apellido,
@@ -206,6 +200,7 @@ export class RegisterComponent {
           this.form.value.obrasocial,
           this.form.value.mail,
           this.form.value.clave,
+          this.imgurl
         );
         break;
       case 'admin':
@@ -216,6 +211,7 @@ export class RegisterComponent {
           this.form.value.dni,
           this.form.value.mail,
           this.form.value.clave,
+          this.imgurl
         );
 
         break;
@@ -228,6 +224,7 @@ export class RegisterComponent {
           this.form.value.mail,
           this.form.value.clave,
           this.especialidadesSeleccionadas,
+          this.imgurl
         );
 
         this.otro = false;
@@ -267,4 +264,36 @@ export class RegisterComponent {
 
     // Opcional: Aquí podrías hacer una solicitud HTTP para enviar los datos al servidor.
   }
+
+  onFileSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      this.selectedFile = target.files[0];
+    }
+  }
+
+  imgurl : string = "";
+
+  imagen()
+  {
+    const fileInput: HTMLInputElement | null = document.getElementById('imagen') as HTMLInputElement;
+  
+    if (fileInput?.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      const imgRef = ref(this.storage, `images/${file.name}`);
+  
+      // Subir la imagen y obtener la URL
+      uploadBytes(imgRef, file)
+        .then(async response => {
+          console.log('Image uploaded successfully:', response);
+          this.imgurl = await getDownloadURL(response.ref);
+          console.log('Image URL:', this.imgurl);
+        });
+  
+          
+    } 
+  }
+
+
+
 }

@@ -12,15 +12,35 @@
     </div>
     </div>
 
-    <!-- Mostrar los turnos del usuario -->
-<div *ngIf="nombresEspecialistasArray.length > 0">
-    <ul class="list-group mt-3">
-      <li *ngFor="let turno of nombresEspecialistasArray" class="list-group-item">
-        <strong>{{ turno.especialista }}</strong> - {{ turno.especialidad }} - {{ turno.horario }}
-        <button class="btn btn-primary btn-sm float-right">Seleccionar Turno</button>
-      </li>
-    </ul>
-  </div>
+
+  <li *ngFor="let turno of nombresEspecialistasArray" class="list-group-item shadow-sm mb-3 p-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div *ngIf="turno.estado != 'eliminado'">
+        <h4 class="text-primary mb-1">{{ turno.especialidad }}</h4>
+        <p class="mb-1"><strong>{{ turno.paciente }}</strong> - {{ turno.horario }}</p>
+      </div>
+      <div *ngIf="turno.estado == 'aceptado'">
+        <button
+        class="btn btn-outline-danger btn-sm me-2"
+        (click)="cambiarEstado('cancelado', turno.paciente)">
+        <i class="bi bi-x-circle"></i> Cancelar
+      </button>
+      </div>
+      <div *ngIf="turno.estado == 'pendiente'">
+        <button disabled
+        class="btn btn-outline-primary btn-sm me-2"
+        (click)="cambiarEstado('cancelado', turno.paciente)">
+        <i class="bi bi-x-circle"></i> PENDIENTE
+      </button>
+      </div>
+      <div *ngIf="turno.estado == 'cancelado' || turno.estado == 'eliminado'">
+        <label>Estado: {{turno.estado}}</label>
+        <br>
+        <label>Comentario: {{turno.mensaje}}</label>
+      </div>
+
+    </div>
+  </li>
   
   <!-- Si no hay turnos disponibles para el usuario -->
   <div *ngIf="nombresEspecialistasArray.length === 0" class="alert alert-warning mt-3">

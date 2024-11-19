@@ -39,6 +39,15 @@ export class LoginComponent {
 
   verficado = false;
 
+  users = [
+    { name: 'Paciente 1', role: 'Paciente', image: 'https://randomuser.me/api/portraits/men/1.jpg' },
+    { name: 'Paciente 2', role: 'Paciente', image: 'https://randomuser.me/api/portraits/men/2.jpg' },
+    { name: 'micaela@gmail.com', role: 'Paciente', image: 'https://randomuser.me/api/portraits/men/3.jpg' },
+    { name: 'mohoxi7158@gitated.com', role: 'Especialista', image: 'https://randomuser.me/api/portraits/men/4.jpg' },
+    { name: 'Especialista 2', role: 'Especialista', image: 'https://randomuser.me/api/portraits/men/5.jpg' },
+    { name: 'matias.skenen@gmail.com"', role: 'Admin', image: 'https://randomuser.me/api/portraits/men/6.jpg' },
+  ];
+
   constructor(
     private auth: Auth,
     private router: Router,

@@ -11,7 +11,7 @@ export class UsuariosService {
 
   constructor(private firestore: Firestore, private auth: Auth) {}
 
-  sendPaciente(nombre : string, apellido : string, edad : number, dni : number, obrasocial : string, email : string, clave : string) 
+  sendPaciente(nombre : string, apellido : string, edad : number, dni : number, obrasocial : string, email : string, clave : string, imagen : string) 
   {
     
     console.log(nombre)
@@ -25,6 +25,7 @@ export class UsuariosService {
       obrasocial: obrasocial,
       email: email,
       clave: clave,
+      imagen: imagen,
       perfil : "paciente"
     };
 
@@ -39,7 +40,7 @@ export class UsuariosService {
 
   }
 
-  sendAdmin(nombre : string, apellido : string, edad : number, dni : number, email : string, clave : string) 
+  sendAdmin(nombre : string, apellido : string, edad : number, dni : number, email : string, clave : string, imagen: string) 
   {
     
     console.log(nombre)
@@ -52,6 +53,7 @@ export class UsuariosService {
       dni: dni,
       email: email,
       clave: clave,
+      imagen : imagen,
       perfil : "admin"
     };
 
@@ -66,7 +68,7 @@ export class UsuariosService {
 
   }
 
-    sendEspecialista(nombre : string, apellido : string, edad : number, dni : number, email : string, clave : string, especialista : any) 
+    sendEspecialista(nombre : string, apellido : string, edad : number, dni : number, email : string, clave : string, especialista : any, imagen : string) 
     {
       
       console.log(nombre)
@@ -81,6 +83,7 @@ export class UsuariosService {
         clave: clave,
         especialista : especialista,
         perfil : "especialista",
+        imagen : imagen,
         verificado : false
       };
 
