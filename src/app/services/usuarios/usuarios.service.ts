@@ -11,13 +11,34 @@ export class UsuariosService {
 
   constructor(private firestore: Firestore, private auth: Auth) {}
 
-  sendPaciente(nombre : string, apellido : string, edad : number, dni : number, obrasocial : string, email : string, clave : string, imagen : string) 
-  {
-    
-    console.log(nombre)
-    let col = collection(this.firestore, "pacientes");
-
-    let obj = { 
+  sendPaciente(
+    nombre: string,
+    apellido: string,
+    edad: number,
+    dni: number,
+    obrasocial: string,
+    email: string,
+    clave: string,
+    imagen: string,
+    imagen2: string
+  ) {
+    // Mostrar parámetros recibidos
+    console.log('Parámetros recibidos:');
+    console.log('Nombre:', nombre);
+    console.log('Apellido:', apellido);
+    console.log('Edad:', edad);
+    console.log('DNI:', dni);
+    console.log('Obra Social:', obrasocial);
+    console.log('Email:', email);
+    console.log('Clave:', clave);
+    console.log('Imagen 1 URL:', imagen);
+    console.log('Imagen 2 URL:', imagen2);
+  
+    // Referencia a la colección en Firestore
+    let col = collection(this.firestore, 'pacientes');
+  
+    // Objeto a guardar
+    let obj = {
       nombre: nombre,
       apellido: apellido,
       edad: edad,
@@ -26,10 +47,14 @@ export class UsuariosService {
       email: email,
       clave: clave,
       imagen: imagen,
-      perfil : "paciente"
+      imagen2: imagen2,
+      perfil: 'paciente',
     };
-
-
+  
+    // Mostrar objeto que será enviado a Firestore
+    console.log('Objeto a guardar en Firestore:', obj);
+  
+    // Agregar a Firestore
     addDoc(col, obj)
       .then(() => {
         console.log('Paciente agregado con éxito');
@@ -37,7 +62,6 @@ export class UsuariosService {
       .catch((error) => {
         console.error('Error al agregar Paciente: ', error);
       });
-
   }
 
   sendAdmin(nombre : string, apellido : string, edad : number, dni : number, email : string, clave : string, imagen: string) 
@@ -84,7 +108,9 @@ export class UsuariosService {
         especialista : especialista,
         perfil : "especialista",
         imagen : imagen,
-        verificado : false
+        verificado : false,
+        horario: "",
+        diasLaborales: ""
       };
 
 
@@ -115,6 +141,8 @@ export class UsuariosService {
       // Suponiendo que deseas buscar por email
       const nombreBuscado = especialista; // Cambia esto con el email que buscas
 
+
+      console.log()
       // Crear una referencia a la colección
       const coleccionRef = collection(this.firestore, "especialistas");
 
