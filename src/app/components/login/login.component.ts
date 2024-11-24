@@ -40,12 +40,12 @@ export class LoginComponent {
   verficado = false;
 
   users = [
-    { name: 'Paciente 1', role: 'Paciente', image: 'https://randomuser.me/api/portraits/men/1.jpg' },
-    { name: 'Paciente 2', role: 'Paciente', image: 'https://randomuser.me/api/portraits/men/2.jpg' },
+    { name: 'sigak61149@cpaurl.com', role: 'Paciente', image: 'https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/pacientes%2Flucasperfil4.PNG?alt=media&token=89ce458e-cd93-4ed1-a358-9c36b5d9bc8a' },
+    { name: 'hevame6403@exoular.com', role: 'Paciente', image: 'https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/pacientes%2Flucasperfil.PNG?alt=media&token=83d2a4ec-86df-47eb-8dba-49a16ed8bd20' },
     { name: 'micaela@gmail.com', role: 'Paciente', image: 'https://randomuser.me/api/portraits/men/3.jpg' },
-    { name: 'mohoxi7158@gitated.com', role: 'Especialista', image: 'https://randomuser.me/api/portraits/men/4.jpg' },
-    { name: 'Especialista 2', role: 'Especialista', image: 'https://randomuser.me/api/portraits/men/5.jpg' },
-    { name: 'matias.skenen@gmail.com"', role: 'Admin', image: 'https://randomuser.me/api/portraits/men/6.jpg' },
+    { name: 'nohiy55680@exoular.com', role: 'Especialista', image: 'https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/images%2Ffotodoctor1.PNG?alt=media&token=21bd5ccc-67ef-4941-9d34-a235fe538197' },
+    { name: 'sipavag916@cpaurl.com', role: 'Especialista', image: 'https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/images%2Ffotodoctor2.PNG?alt=media&token=5807ca68-5ea3-45d8-b9e4-7af5c00fab09' },
+    { name: 'matias.skenen@gmail.com', role: 'Admin', image: 'https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/images%2Ffotoperfiladmin.PNG?alt=media&token=926b0854-0d85-4a7a-bf18-311b806654f4' },
   ];
 
   constructor(

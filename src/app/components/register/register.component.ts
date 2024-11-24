@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import {
-  
+
   FormBuilder,
   FormGroup,
   FormsModule,
@@ -47,7 +47,7 @@ export class RegisterComponent {
 
   otro = false;
 
-  sitekey : string = "6LfqMoEqAAAAAK9FQ8HZZqF3T2ZN0TClF_CgYwJv";
+  sitekey: string = "6LfqMoEqAAAAAK9FQ8HZZqF3T2ZN0TClF_CgYwJv";
 
 
   imageName: string = '';
@@ -59,10 +59,10 @@ export class RegisterComponent {
     private router: Router,
     private fb: FormBuilder,
     private sendUsers: UsuariosService,
-    private storage : Storage
+    private storage: Storage
   ) {
 
-    
+
   }
 
   ngOnInit(): void {
@@ -86,7 +86,7 @@ export class RegisterComponent {
       especialidad: new FormControl(''),
       especialidadOtro: new FormControl(''),
       recaptcha: new FormControl('', Validators.required)
-      
+
     });
   }
 
@@ -131,19 +131,23 @@ export class RegisterComponent {
     return this.form.get('obrasocial');
   }
 
-  enviar() {
+  async enviar() {
+    this.isLoading = true;
+    await this.uploadImages(); // Esperar a que se genere la URL de la imagen
+  
     if (this.form.valid) {
       console.log('Formulario enviado', this.form.value);
       this.sendUser();
-      this.form.reset();
-      this.auth.signOut();
+      this.isLoading = false;
+      //this.form.reset();
+
       this.resultado = 'El formulario Enviado';
       this.flagSuccess = true;
       this.router.navigate(['/home']);
     } else {
       this.flagError = true;
       console.log('Error Formulario');
-      this.resultado = 'El formulario no es válido, Completar los demas Campos';
+      this.resultado = 'El formulario no es válido o no se cargó la imagen.';
       this.form.markAllAsTouched();
     }
   }
@@ -200,7 +204,8 @@ export class RegisterComponent {
           this.form.value.obrasocial,
           this.form.value.mail,
           this.form.value.clave,
-          this.imgurl
+          this.imgurl, 
+          this.imgurl2
         );
         break;
       case 'admin':
@@ -265,35 +270,49 @@ export class RegisterComponent {
     // Opcional: Aquí podrías hacer una solicitud HTTP para enviar los datos al servidor.
   }
 
-  onFileSelected(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      this.selectedFile = target.files[0];
+  selectedFile1: File | null = null;
+  selectedFile2: File | null = null;
+
+  onFileSelected(event: Event, imagenId: string): void {
+    const input = event.target as HTMLInputElement;
+    if (input?.files && input.files.length > 0) {
+      if (imagenId === 'imagen1') {
+        this.selectedFile1 = input.files[0];
+      } else if (imagenId === 'imagen2') {
+        this.selectedFile2 = input.files[0];
+      }
     }
   }
 
-  imgurl : string = "";
+  imgurl: string = "";
+  imgurl2: string = "";
 
-  imagen()
-  {
-    const fileInput: HTMLInputElement | null = document.getElementById('imagen') as HTMLInputElement;
+  async uploadImages(): Promise<void> {
+    try {
+      if (this.selectedFile1 && this.selectedFile2) {
+        const filePath1 = `pacientes/${this.selectedFile1.name}`;
+        const filePath2 = `pacientes/${this.selectedFile2.name}`;
   
-    if (fileInput?.files && fileInput.files[0]) {
-      const file = fileInput.files[0];
-      const imgRef = ref(this.storage, `images/${file.name}`);
+        const storageRef1 = ref(this.storage, filePath1);
+        const storageRef2 = ref(this.storage, filePath2);
   
-      // Subir la imagen y obtener la URL
-      uploadBytes(imgRef, file)
-        .then(async response => {
-          console.log('Image uploaded successfully:', response);
-          this.imgurl = await getDownloadURL(response.ref);
-          console.log('Image URL:', this.imgurl);
-        });
+        // Subir primera imagen
+        await uploadBytes(storageRef1, this.selectedFile1);
+        this.imgurl = await getDownloadURL(storageRef1);
+        console.log('Primera imagen subida:', this.imgurl);
   
-          
-    } 
+        // Subir segunda imagen
+        await uploadBytes(storageRef2, this.selectedFile2);
+        this.imgurl2 = await getDownloadURL(storageRef1);
+        console.log('Primera imagen subida:', this.imgurl2);
+
+      } 
+      else {
+        console.error('Debes seleccionar ambas imágenes');
+      }
+    } catch (error) {
+      console.error('Error al subir imágenes:', error);
+    }
   }
-
-
 
 }
