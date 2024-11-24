@@ -38,6 +38,7 @@ export class SolicitarturnoComponent {
         nombre: especialista.nombre,
         horario: especialista.horario,
         email : especialista.email,
+        imagen : especialista.imagen,
         especialidades: Object.keys(especialista.especialista).filter(key => especialista.especialista[key])
       }));
 
@@ -57,6 +58,7 @@ export class SolicitarturnoComponent {
 
   // Seleccionar un especialista
   seleccionarEspecialista(especialista: any) {
+    this.eleccion = true;
     this.especialista = especialista; // Asignamos el especialista seleccionado
     this.generarTurnosDisponibles(); // Generar los turnos disponibles
   }
@@ -102,4 +104,17 @@ export class SolicitarturnoComponent {
       this.router.navigate(['/turnoPaciente']); // Redirigir después de 2 segundos
     }, 2000);
   }
+
+  eleccion = false;
+  
+  volverhome(){
+
+
+  }
+
+  volver()
+  {
+
+  }
+
 }
