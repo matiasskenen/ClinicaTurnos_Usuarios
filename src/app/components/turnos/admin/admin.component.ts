@@ -4,67 +4,271 @@ import { DataService } from '../../../services/authUsers/data.service';
 import { Auth } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { FilterPipe } from '../../pipes/filter.pipe';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FilterPipe],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent {
+// Variables
+searchText: string = '';
+diagnosticoArray: any[] = [];
+nombresEspecialistasArray: any[] = [];
+nombresFiltrados: any[] = []; // Inicialización como array vacío
+especialidadSeleccionada: string = '';
+especialista: any = {};
+turnosDisponibles: string[] = [];
+turnoSeleccionado: string = '';
+mensajeExito: boolean = false; // Para mostrar el mensaje de éxito
+pacienteFiltrado = "";
+doctorActual: any;
 
-  
-  // Variables
-  nombresEspecialistasArray: any[] = [];
-  nombresFiltrados: any[] = []; // Inicialización como array vacío
-  especialidadSeleccionada: string = '';
-  especialista: any = {};
-  turnosDisponibles: string[] = [];
-  turnoSeleccionado: string = '';
-  mensajeExito: boolean = false; // Para mostrar el mensaje de éxito
-  pacienteFiltrado = "";
+constructor(
+  private turnos: TurnosService,
+  private userService: DataService,
+  private auth: Auth,
+) {
+  this.dataFiltros();
+}
 
-  constructor(
-    private turnos: TurnosService,
-    private userService: DataService,
-    private auth: Auth,
-  ) {
-    this.dataNombres();
-  }
+// Función para obtener los turnos del usuario
+dataNombres() {
+  this.auth.onAuthStateChanged((user) => {
+    let usuarioActual = user?.email;
+    this.doctorActual = user?.email;
 
-  // Función para obtener los turnos del usuario
-  dataNombres() {
-    this.auth.onAuthStateChanged((user) => {
-      let usuarioActual = user?.email ;
+    // Llamada al servicio para obtener los turnos
+    this.turnos.getTurnos().subscribe({
+      next: (data: any[]) => {
+        // Filtrar los turnos donde el paciente es el usuario actual
+        this.nombresEspecialistasArray = data
+          .filter((turno: any) => turno.emailEspecialsita === usuarioActual) // Filtra por el paciente
+          .map((turno: any) => ({
+            paciente: turno.paciente,
+            especialista: turno.especialista,
+            especialidad: turno.especialidad,
+            horario: turno.horario,
+            estado: turno.estado,
+            mensaje: turno.mensaje,
 
-      // Llamada al servicio para obtener los turnos
-      this.turnos.getTurnos().subscribe({
-        next: (data: any[]) => {
-          // Filtrar los turnos donde el paciente es el usuario actual
-          this.nombresEspecialistasArray = data
-            .map((turno: any) => ({
-              paciente: turno.paciente,
-              especialista: turno.especialista,
-              especialidad: turno.especialidad,
-              horario: turno.horario,
-              estado: turno.estado
-            }));
+          }));
 
-          // Actualizar los turnos filtrados para la visualización
-          this.nombresFiltrados = [...this.nombresEspecialistasArray];
-
-        },
-        error: (err) => {
-          console.error('Error al obtener los turnos:', err);
-        },
-      });
+        // Actualizar los turnos filtrados para la visualización
+        this.nombresFiltrados = [...this.nombresEspecialistasArray];
+      },
+      error: (err) => {
+        console.error('Error al obtener los turnos:', err);
+      },
     });
-  }
+  });
+}
 
-  cambiarEstado(estado : string, usuario : any)
-  {
-    this.turnos.ingresarEstado(estado, usuario.paciente, usuario.horario)
-  }
+historiaclinicaaray: any[] = [];
+historiaEncontrada = false;
+
+datahistoria() {
+  this.auth.onAuthStateChanged((user) => {
+    const usuarioActual = user?.email;
+
+    if (!usuarioActual) {
+      console.error('No se encontró un usuario autenticado.');
+      return;
+    }
+
+    this.doctorActual = usuarioActual;
+    console.log("entre");
+
+    // Llamar solo al servicio de historia clínica
+    this.turnos.getHistoriaClinica().subscribe({
+      next: (historiaClinica) => {
+        console.log('Datos recibidos:', historiaClinica);
+
+        // Filtrar y mapear las historias clínicas
+        const historiaFiltrada = historiaClinica
+          .filter((historia: any) => historia.emailEspecialsita === usuarioActual)
+          .map((historia: any) => ({
+            altura: historia.altura || '',
+            peso: historia.peso || '',
+            presion: historia.presion || '',
+            temperatura: historia.temperatura || '',
+          }));
+
+        console.log("Historias clínicas filtradas:", historiaFiltrada);
+        this.historiaclinicaaray = historiaFiltrada;
+      },
+      error: (err) => {
+        console.error('Error al obtener los datos de historia clínica:', err);
+      },
+    });
+  });
+}
+
+dataFiltros() {
+  this.auth.onAuthStateChanged((user) => {
+    const usuarioActual = user?.email;
+
+    if (!usuarioActual) {
+      console.error('No se encontró un usuario autenticado.');
+      return;
+    }
+
+    this.doctorActual = usuarioActual;
+    console.log("entre");
+
+    // Llamar solo al servicio de historia clínica
+    this.turnos.getHistoriaClinica().subscribe({
+      next: (historiaClinica) => {
+        console.log('Datos recibidos:', historiaClinica);
+
+        // Filtrar las historias clínicas por emaildoctor
+        const historiaFiltrada = historiaClinica
+          .filter((historia: any) => historia.emailEspecialsita === usuarioActual)
+          .map((historia: any) => ({
+            altura: historia.altura,
+            peso: historia.peso,
+            presion: historia.presion,
+            temperatura: historia.temperatura,
+            usuario: historia.paciente,
+            emaildoctor: historia.emailEspecialsita
+          }));
+
+        console.log("Historias clínicas filtradas:", historiaFiltrada);
+        this.nombresEspecialistasArray = historiaFiltrada;
+
+        // Llamar al servicio de turnos después de obtener la historia clínica
+        this.turnos.getTurnos().subscribe({
+          next: (turno) => {
+            console.log('Datos recibidos:', turno);
+
+            // Filtrar los turnos por emaildoctor
+            const turnosFiltrados = turno
+              .filter((turno: any) => turno.emailEspecialsita === usuarioActual)
+              .map((turno: any) => ({
+                paciente: turno.paciente,
+                especialista: turno.especialista,
+                especialidad: turno.especialidad,
+                horario: turno.horario,
+                estado: turno.estado,
+                mensaje: turno.mensaje,
+                emaildoctor: turno.emailEspecialsita,
+                comentario: turno.comentario
+              }));
+
+            console.log("turnosFiltrados:", turnosFiltrados);
+
+            // Unir ambos arrays (historias clínicas y turnos filtrados)
+            // Unir ambos arrays
+            const datosCombinados = historiaFiltrada.concat(turno);
+            console.log("Datos combinados:", datosCombinados);
+            this.nombresEspecialistasArray = datosCombinados;
+          },
+          error: (err) => {
+            console.error('Error al obtener los datos de turnos:', err);
+          },
+        });
+      },
+      error: (err) => {
+        console.error('Error al obtener los datos de historia clínica:', err);
+      },
+    });
+  });
+}
+
+
+cambiarEstado(estado: string, usuario: any) {
+  console.log(usuario.paciente)
+  console.log(usuario.horario)
+  this.turnos.ingresarEstado(estado, usuario.paciente, usuario.horario)
+}
+
+cambiarMensaje(mensaje: string, usuario: any) {
+  this.turnos.ingresarMensaje(mensaje, usuario.paciente)
+}
+
+mostrarFormularioDiagnostico(turno: any) {
+  // Mostrar el formulario solo para el turno seleccionado
+  this.nombresEspecialistasArray.forEach((t) => {
+    t.mostrarFormularioDiagnostico = false;
+  });
+  turno.mostrarFormularioDiagnostico = true;
+}
+
+ocultarFormularioDiagnostico(turno: any) {
+  turno.mostrarFormularioDiagnostico = false;
+}
+
+guardarDiagnostico(turno: any, usuario: any) {
+  console.log('Diagnóstico Guardado:', turno.diagnostico);
+  console.log('Comentarios Guardados:', turno.comentarios);
+
+  this.turnos.ingresarDiagnostico(turno.diagnostico, usuario)
+  this.turnos.ingresarComentario(turno.comentarios, usuario)
+
+  // Aquí puedes realizar el llamado al servicio para guardar los datos en el backend
+  this.cambiarEstado('diagnosticado', turno); // Cambiar estado del turno
+  turno.mostrarFormularioDiagnostico = false;
+}
+
+mostrarFormularioHistoriaClinica(turno: any) {
+  // Mostrar el formulario solo para el turno seleccionado
+  this.nombresEspecialistasArray.forEach((t) => {
+    t.mostrarFormularioHistoriaClinica = false;
+  });
+  turno.mostrarFormularioHistoriaClinica = true;
+}
+
+ocultarHistoriaClinica(turno: any) {
+  turno.mostrarFormularioHistoriaClinica = false;
+  this.datodinamico1 = false;
+  this.datodinamico2 = false;
+}
+
+guardarHistoriaClinica(turno: any, usuario: any) {
+  console.log('Altura:', turno.altura);
+  console.log('Peso:', turno.peso);
+  console.log('Temperatura:', turno.temperatura);
+  console.log('Presión Arterial:', turno.presion);
+
+  console.log('Temperatura:', turno.NombredatodinamicoUno);
+  console.log('Presión Arterial:', turno.datodinamicoUno);
+
+  console.log('Temperatura:', turno.NombredatodinamicoDos);
+  console.log('Presión Arterial:', turno.datodinamicoDos);
+
+  this.turnos.sendHistoriaClinica(this.doctorActual, turno.paciente, turno.altura, turno.peso, turno.temperatura, turno.presion, turno.temperatura, turno.NombredatodinamicoUno, turno.NombredatodinamicoDos, turno.datodinamicoDos)
+  this.cambiarEstado('historiaClinica', turno); // 
+  turno.mostrarFormularioHistoriaClinica = false;
+  // Llamar al servicio para guardar la historia clínica en el backend
+}
+
+datodinamico1 = false;
+datodinamico2 = false;
+
+Agregardatodinamico1() {
+  this.datodinamico1 = true;
+}
+
+Agregardatodinamico2() {
+  this.datodinamico2 = true;
+}
+
+verdiagnostico(usuario: string) {}
+
+verDiagnosticoTerminado(turno: any) {
+  // Mostrar el formulario solo para el turno seleccionado
+  this.nombresEspecialistasArray.forEach((t) => {
+    t.mostrarFormularioDiagnostico = false;
+  });
+  turno.mostrarFormularioDiagnostico = true;
+}
+
+// Código de envío
+toggleMensajeExito() {
+  this.mensajeExito = !this.mensajeExito;
+}
 
 }

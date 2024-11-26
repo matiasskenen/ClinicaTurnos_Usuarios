@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, user } from '@angular/fire/auth';
 import {
@@ -72,6 +73,12 @@ export class LoginComponent {
               this.userService.setUser(this.email);
               console.log(this.role)
               this.userService.setUserVerificado(true);
+              Swal.fire({
+                title: 'Éxito!',
+                text: 'La operación fue exitosa.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+              })
               this.router.navigate(['/home']);
             } else {
 
@@ -84,12 +91,24 @@ export class LoginComponent {
                   {
                     this.userService.setUser(this.email);
                     this.actualizarEstadoVerificacion(res.user);
+                    Swal.fire({
+                      title: 'Éxito!',
+                      text: 'La operación fue exitosa.',
+                      icon: 'success',
+                      confirmButtonText: 'Aceptar'
+                    })
                     this.router.navigate(['/home']);
                     this.userService.setUserVerificado(true);
                   
                   }
                   else
                   {
+                    Swal.fire({
+                      title: 'Error!',
+                      text: 'El usuario No esta verficiado por Admin.',
+                      icon: 'error',
+                      confirmButtonText: 'Intentar de nuevo'
+                    })
                     this.msjError = 'El usuario No esta verficiado por Admin.';
                     console.log('El usuario no está verificado por Admin');
                     this.flagError = true;
@@ -97,6 +116,12 @@ export class LoginComponent {
                 }
                 else
                 {
+                  Swal.fire({
+                    title: 'Error!',
+                    text: 'El usuario no esta verficiado por mail.',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                  })
                   this.msjError = 'El usuario no esta verficiado por mail.';
                   console.log('El usuario no está verificado por mail');
                   this.flagError = true;

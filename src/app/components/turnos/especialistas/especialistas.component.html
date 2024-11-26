@@ -31,6 +31,11 @@
             <button class="btn btn-outline-danger btn-sm me-2" (click)="cambiarEstado('rechazado', turno)">
               <i class="bi bi-x-circle"></i> Rechazar
             </button>
+
+            <button class="btn btn-outline-danger btn-sm me-2" (click)="cambiarEstado('rechazado', turno)">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </button>
+
           </div>
 
           <div *ngIf="turno.estado === 'aceptado'">
@@ -63,7 +68,7 @@
             <label for="comentariosInput" class="form-label">Comentarios:</label>
             <textarea id="comentariosInput" [(ngModel)]="turno.comentarios" class="form-control" placeholder="Escribe tus comentarios aquí"></textarea>
           </div>
-          <button class="btn btn-success btn-sm" (click)="guardarDiagnostico(turno, turno.paciente)">Guardar Diagnóstico</button>
+          <button  class="btn btn-success btn-sm" (click)="guardarDiagnostico(turno, turno.paciente)">Guardar Diagnóstico</button>
           <button class="btn btn-secondary btn-sm ms-2" (click)="ocultarFormularioDiagnostico(turno)">Cancelar</button>
         </div>
 

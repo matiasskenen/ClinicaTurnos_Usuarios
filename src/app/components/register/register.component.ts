@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NgxCaptchaModule } from 'ngx-captcha';
+import Swal from 'sweetalert2';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
 import {
 
@@ -131,6 +132,8 @@ export class RegisterComponent {
     return this.form.get('obrasocial');
   }
 
+  
+
   async enviar() {
     this.isLoading = true;
     await this.uploadImages(); // Esperar a que se genere la URL de la imagen
@@ -143,6 +146,12 @@ export class RegisterComponent {
 
       this.resultado = 'El formulario Enviado';
       this.flagSuccess = true;
+      Swal.fire({
+        title: 'Éxito!',
+        text: 'La operación fue exitosa.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
       this.router.navigate(['/home']);
     } else {
       this.flagError = true;

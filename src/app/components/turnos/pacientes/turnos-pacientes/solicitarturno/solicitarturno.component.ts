@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import Swal from 'sweetalert2';
 import { TurnosService } from '../../../../../services/turnos/turnos.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -160,6 +161,14 @@ export class SolicitarturnoComponent {
         this.mensajeExito = true;
         setTimeout(() => {
           this.mensajeExito = false;
+
+          Swal.fire({
+            title: 'Éxito!',
+            text: 'El turno fue solicitado.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          })
+
           this.router.navigate(['/turnoPaciente']);
         }, 2000);
       } else {
@@ -175,6 +184,13 @@ export class SolicitarturnoComponent {
   
       // Si ya existe un turno con el mismo horario y día, marcamos como no válido
       if (turnoExistente) {
+
+        Swal.fire({
+          title: 'Error!',
+          text: 'El turno ya está reservado.',
+          icon: 'error',
+          confirmButtonText: 'Intentar de nuevo'
+        })
         console.log("El turno ya está reservado.");
         this.turnoValido = false;
       } else {

@@ -120,6 +120,17 @@ export class TurnosService {
       return collectionData(filteredQuery); // Retorna el observable
     }
 
+    getadmin(): Observable<any[]> {
+      const col = collection(this.firestore, "admins");
+  
+      const filteredQuery = query(
+        col
+      );
+  
+      return collectionData(filteredQuery); // Retorna el observable
+    }
+
+
     getHistoriaClinica(): Observable<any[]> {
       const col = collection(this.firestore, "historiaClinica");
   
@@ -130,6 +141,16 @@ export class TurnosService {
       return collectionData(filteredQuery); // Retorna el observable
     }
 
+
+    getUsers(): Observable<any[]> {
+      const col = collection(this.firestore, "pacientes");
+  
+      const filteredQuery = query(
+        col
+      );
+  
+      return collectionData(filteredQuery); // Retorna el observable
+    }
 
     
 

@@ -155,7 +155,8 @@ export class EspecialistasComponent {
                   horario: turno.horario,
                   estado: turno.estado,
                   mensaje: turno.mensaje,
-                  emaildoctor: turno.emailEspecialsita
+                  emaildoctor: turno.emailEspecialsita,
+                  comentario: turno.comentario
                 }));
   
               console.log("turnosFiltrados:", turnosFiltrados);
