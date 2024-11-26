@@ -25,6 +25,11 @@ export class EspecialistaPerfilComponent {
 
   }
 
+  diasusuario : any;
+  
+  imagenusuario = "";
+
+
   DepartamentList = ["9:00 a 17:00", "7:00 a 15:00"]
 
   horario: any;
@@ -63,6 +68,8 @@ export class EspecialistaPerfilComponent {
       data.forEach(item => {
         if (item.email === this.user) {
           this.getHorario = item.horario;
+          this.imagenusuario = item.imagen;
+          this.diasusuario = item.laboral;
           
           // Accediendo a las claves del objeto especialista
           const especialistas = Object.keys(item.especialista);
@@ -208,6 +215,40 @@ dafualtimage()
     } catch (error) {
       console.error('Error al agregar datos: ', error);
     }
+  }
+
+  diasLaborales: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+  diasSeleccionados: string[] = [];
+
+  actualizarDiasLaborales(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    const dia = checkbox.value;
+
+    if (checkbox.checked) {
+      // Agregar día si está seleccionado
+      this.diasSeleccionados.push(dia);
+    } else {
+      // Remover día si está desmarcado
+      this.diasSeleccionados = this.diasSeleccionados.filter(d => d !== dia);
+    }
+  }
+
+  diassellecionados = false;
+
+  guardarDiasLaborales(): void {
+    this.diassellecionados = true;
+    console.log('Días laborales seleccionados:', this.diasSeleccionados.join(', '));
+    console.log(this.diasSeleccionados)
+    this.userService.ingresarLaboral(this.user, this.diasSeleccionados)
+    // Aquí puedes enviar los días seleccionados al backend o guardarlos en alguna variable persistente
+  }
+
+  cambiarDiasLaborales(): void {
+    this.diasSeleccionados = [];
+    this.diassellecionados = false;
+    console.log('Días laborales seleccionados:', this.diasSeleccionados.join(', '));
+    this.userService.ingresarLaboral(this.user, this.diasSeleccionados) 
+    // Aquí puedes enviar los días seleccionados al backend o guardarlos en alguna variable persistente
   }
   
 }

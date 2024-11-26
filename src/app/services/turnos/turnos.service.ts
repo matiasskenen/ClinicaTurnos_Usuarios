@@ -59,8 +59,19 @@ export class TurnosService {
     return collectionData(filteredQuery); // Retorna el observable
   }
 
+  getTurno(): Observable<any[]> {
+    const col = collection(this.firestore, "turnos");
 
-  sendturno(paciente : string, especialista : string, especialidad : string, horario : string, email : string) 
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
+
+
+  sendturno(paciente : string, especialista : string, especialidad : string, horario : string, email : string, dia : string) 
     {
       let col = collection(this.firestore, "turnos");
 
@@ -73,7 +84,8 @@ export class TurnosService {
         estado: "pendiente",
         mensaje: "",
         diagnostico : "",
-        comentario : ""
+        comentario : "",
+        dia: dia
       };
 
 

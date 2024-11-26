@@ -154,7 +154,7 @@
                 <input type="file" id="imagen1" (change)="onFileSelected($event, 'imagen1')" accept="image/*">
               </div>
               <br>
-              <div>
+              <div *ngIf="rol == 'paciente'">
                 <label for="imagen2">Selecciona la segunda imagen:</label>
                 <input type="file" id="imagen2" (change)="onFileSelected($event, 'imagen2')" accept="image/*">
               </div>
@@ -191,23 +191,24 @@
                   <div class="form-check" *ngFor="let especialidad of especialidades">
                     <input class="form-check-input" type="checkbox" [value]="especialidad" [id]="especialidad"
                       [(ngModel)]="especialidadesSeleccionadas[especialidad]" name="especialidades" />
-                    <label class="form-check-label" [for]="especialidad">{{
-                      especialidad
-                      }}</label>
+                    <label class="form-check-label" [for]="especialidad">{{ especialidad }}</label>
                   </div>
-
+                
+                  <!-- Botón para activar el campo de "Otra especialidad" -->
+                  <button *ngIf="!OTRAespecialidad" type="button" class="btn btn-secondary" (click)="cambiarOtra()">
+                    Otra especialidad
+                  </button>
+                
                   <!-- Campo para escribir si "Otra" es seleccionada -->
-                  <div *ngIf="especialidadesSeleccionadas['Otra']" class="form-group mt-3">
+                  <div *ngIf="OTRAespecialidad" class="form-group mt-3">
                     <label for="otraEspecialidad">Especifique otra especialidad:</label>
                     <input type="text" class="form-control" id="otraEspecialidad" [(ngModel)]="otraEspecialidad"
-                      name="otraEspecialidad" placeholder="Ingrese su especialidad" />
+                      name="otraEspecialidad" placeholder="Ingrese su especialidad" required />
                   </div>
-
+                
                   <!-- Botón de Guardar -->
                   <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary">
-                      Guardar
-                    </button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                   </div>
                 </form>
               </div>

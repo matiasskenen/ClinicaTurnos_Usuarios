@@ -97,6 +97,7 @@ export class UsuariosService {
       
       console.log(nombre)
       let col = collection(this.firestore, "especialistas");
+      console.log(especialista)
 
       let obj = { 
         nombre: nombre,
@@ -170,6 +171,42 @@ export class UsuariosService {
         console.error("Error al realizar la consulta:", error);
       });
     }
+
+    ingresarLaboral(especialista : string, dias : any)
+    {
+      // Suponiendo que deseas buscar por email
+      const nombreBuscado = especialista; // Cambia esto con el email que buscas
+
+
+      console.log()
+      // Crear una referencia a la colección
+      const coleccionRef = collection(this.firestore, "especialistas");
+
+      // Crear una consulta que busque el documento donde el email coincide
+      const consulta = query(coleccionRef, where("email", "==", nombreBuscado));
+
+      // Obtener los documentos que coinciden con la consulta
+      getDocs(consulta).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          // Si se encuentra al menos un documento, tomamos el primero
+          const docSnap = querySnapshot.docs[0]; // Aquí obtenemos el primer documento
+          const idEspecialista = docSnap.id; // Obtenemos el id del documento encontrado
+
+          // Ahora puedes actualizar el campo 'nombre' de este documento
+          const especialistaRef = doc(this.firestore, "especialistas", idEspecialista);
+          
+          updateDoc(especialistaRef, {
+            laboral: dias // Cambia esto con el nuevo nombre que deseas asignar
+          })
+
+        } else {
+          console.log("No se encontró el especialista con ese email.");
+        }
+      }).catch((error) => {
+        console.error("Error al realizar la consulta:", error);
+      });
+    }
+
 
     modificarVerficiado(funicion : string, nombre : string)
     {

@@ -221,6 +221,7 @@ export class RegisterComponent {
 
         break;
       default:
+        console.log(this.especialidadesSeleccionadas + "esepecialdiadeeeees")
         this.sendUsers.sendEspecialista(
           this.form.value.nombre,
           this.form.value.apellido,
@@ -239,15 +240,23 @@ export class RegisterComponent {
     }
   }
 
+  
+
   especialidades: string[] = [
     'Cardiología',
     'Dermatología',
     'Pediatría',
-    'Otra',
   ];
 
   // Objeto para almacenar las especialidades seleccionadas
   especialidadesSeleccionadas: { [key: string]: boolean } = {};
+
+  OTRAespecialidad = false;
+
+  cambiarOtra()
+  {
+    this.OTRAespecialidad = true;
+  }
 
   otraEspecialidad: string = '';
 
@@ -258,14 +267,16 @@ export class RegisterComponent {
       (especialidad) => this.especialidadesSeleccionadas[especialidad],
     );
 
-    if (this.especialidadesSeleccionadas['Otra'] && this.otraEspecialidad) {
+    // Si se selecciona "Otra especialidad", agregarla a las seleccionadas y al objeto especialidadesSeleccionadas
+    if (this.OTRAespecialidad && this.otraEspecialidad.trim()) {
       seleccionadas.push(this.otraEspecialidad);
+      this.especialidadesSeleccionadas[this.otraEspecialidad] = true; // Agregar "Otra especialidad" al objeto
+      console.log('Especialidad "Otra" agregada:', this.otraEspecialidad);
     }
 
     // Mostrar las especialidades seleccionadas en la consola
-    console.log('Especialidades seleccionadas:', seleccionadas);
+    console.log('Especialidades seleccionadas:', this.especialidadesSeleccionadas);
 
-    // Opcional: Aquí podrías hacer una solicitud HTTP para enviar los datos al servidor.
   }
 
   selectedFile1: File | null = null;
@@ -287,30 +298,47 @@ export class RegisterComponent {
 
   async uploadImages(): Promise<void> {
     try {
-      if (this.selectedFile1 && this.selectedFile2) {
-        const filePath1 = `pacientes/${this.selectedFile1.name}`;
-        const filePath2 = `pacientes/${this.selectedFile2.name}`;
+      if (this.rol == "paciente") {
+        if (this.selectedFile1 && this.selectedFile2) {
+          const filePath1 = `pacientes/${this.selectedFile1.name}`;
+          const filePath2 = `pacientes/${this.selectedFile2.name}`;
+  
+          const storageRef1 = ref(this.storage, filePath1);
+          const storageRef2 = ref(this.storage, filePath2);
+  
+          // Check if selectedFile1 is not null and upload
+          if (this.selectedFile1) {
+            await uploadBytes(storageRef1, this.selectedFile1);
+            this.imgurl = await getDownloadURL(storageRef1);
+            console.log('Primera imagen subida:', this.imgurl);
+          }
+  
+          // Check if selectedFile2 is not null and upload
+          if (this.selectedFile2) {
+            await uploadBytes(storageRef2, this.selectedFile2);
+            this.imgurl2 = await getDownloadURL(storageRef2);
+            console.log('Segunda imagen subida:', this.imgurl2);
+          }
+  
+        } else {
+          console.error('Debes seleccionar ambas imágenes');
+        }
+      } else {
+        const filePath1 = `pacientes/${this.selectedFile1?.name}`;
   
         const storageRef1 = ref(this.storage, filePath1);
-        const storageRef2 = ref(this.storage, filePath2);
   
-        // Subir primera imagen
-        await uploadBytes(storageRef1, this.selectedFile1);
-        this.imgurl = await getDownloadURL(storageRef1);
-        console.log('Primera imagen subida:', this.imgurl);
-  
-        // Subir segunda imagen
-        await uploadBytes(storageRef2, this.selectedFile2);
-        this.imgurl2 = await getDownloadURL(storageRef1);
-        console.log('Primera imagen subida:', this.imgurl2);
-
-      } 
-      else {
-        console.error('Debes seleccionar ambas imágenes');
+        // Check if selectedFile1 is not null and upload
+        if (this.selectedFile1) {
+          await uploadBytes(storageRef1, this.selectedFile1);
+          this.imgurl = await getDownloadURL(storageRef1);
+          console.log('Primera imagen subida:', this.imgurl);
+        }
       }
     } catch (error) {
       console.error('Error al subir imágenes:', error);
     }
   }
+  
 
 }

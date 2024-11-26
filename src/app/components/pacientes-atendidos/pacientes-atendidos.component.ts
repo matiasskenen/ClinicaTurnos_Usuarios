@@ -50,7 +50,8 @@ export class PacientesAtendidosComponent {
               apellido: turno.apellido,
               imagen: turno.imagen,
                edad: turno.edad,
-               email: turno.email
+               email: turno.email,
+               doctoremail : turno.emailEspecialsita
              }));
  
            // Actualizar los turnos filtrados para la visualización

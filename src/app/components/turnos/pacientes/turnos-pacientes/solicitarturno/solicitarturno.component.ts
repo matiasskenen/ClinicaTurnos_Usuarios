@@ -13,7 +13,7 @@ import { DataService } from '../../../../../services/authUsers/data.service';
   styleUrls: ['./solicitarturno.component.scss']
 })
 export class SolicitarturnoComponent {
-  
+  fechaSeleccionada: Date = new Date();
   nombresEspecialistasArray: any[] = [];
   nombresFiltrados: any[] = [];
   selectedEspecialidad: string = '';
@@ -31,12 +31,36 @@ export class SolicitarturnoComponent {
   eleccion2 = false;
 
   especialistasEmail = "";
+  fechaMaxima: Date = new Date();
   
   constructor(private turnos: TurnosService, private userService: DataService, private router : Router) {}
+
+  obtenerTurnosDisponibles() {
+    if (this.especialidadSeleccionada && this.fechaSeleccionada) {
+      this.turnosDisponibles = ['09:00 AM', '10:00 AM', '11:00 AM'];
+    }
+  }
+
+  cambiarFecha(dias: number) {
+    const nuevaFecha = new Date(this.fechaSeleccionada);
+    nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+    // Aseguramos que no se pueda pasar de los 15 días máximos
+    if (nuevaFecha <= this.fechaMaxima && nuevaFecha >= new Date()) {
+      this.fechaSeleccionada = nuevaFecha;
+      this.generarTurnosDisponibles();
+    }
+  }
 
   ngOnInit(): void {
     this.usuarioActual = this.userService.getUser(); // Obtén el usuario actual
     this.dataNombres();
+    this.calcularFechaMaxima(); 
+  }
+
+  calcularFechaMaxima() {
+    const hoy = new Date();
+    hoy.setDate(hoy.getDate() + 15);  // Sumar 15 días a la fecha de hoy
+    this.fechaMaxima = hoy;
   }
 
   // Obtener nombres de especialistas y especialidades
@@ -102,19 +126,64 @@ export class SolicitarturnoComponent {
   }
 
   seleccionarTurno(turno: string) {
+    // Convierte el turno seleccionado a una fecha
+    const [hora, minuto] = turno.split(':');
+    const fechaSeleccionada = new Date();
+    fechaSeleccionada.setHours(parseInt(hora));
+    fechaSeleccionada.setMinutes(parseInt(minuto));
+  
+    // Verificar si la fecha seleccionada no excede la fecha máxima permitida
+    if (fechaSeleccionada > this.fechaMaxima) {
+      alert('No se puede seleccionar un turno más allá de 15 días de anticipación.');
+      return;  // Salir si la fecha seleccionada no es válida
+    }
+  
     this.turnoSeleccionado = turno;
-
   }
 
-  confirmarturno()
-  {
-    this.turnos.sendturno(this.userService.getUser(), this.especialista.nombre, this.especialidadSeleccionada, this.turnoSeleccionado, this.especialista.email);
-    this.mensajeExito = true;
+  turnoValido : boolean = false;
+
+  confirmarturno() {
+    const dia = this.fechaSeleccionada;
+    const fechaFormateada = `${dia.getDate().toString().padStart(2, '0')}/${(dia.getMonth() + 1).toString().padStart(2, '0')}/${dia.getFullYear()}`;
+  
+    this.turnoValido = false; // Inicializamos el valor de la validación
+  
+    // Llamamos a la función validarturno y esperamos la respuesta
+    this.validarturno(this.turnoSeleccionado, fechaFormateada);
+  
+    // Usamos setTimeout para darle tiempo a la validación asincrónica
     setTimeout(() => {
-      this.mensajeExito = false;
-      this.router.navigate(['/turnoPaciente']);
-    }, 2000);
+      if (this.turnoValido) {
+        // Si el turno es válido, se confirma la selección
+        this.turnos.sendturno(this.userService.getUser(), this.especialista.nombre, this.especialidadSeleccionada, this.turnoSeleccionado, this.especialista.email, fechaFormateada);
+        this.mensajeExito = true;
+        setTimeout(() => {
+          this.mensajeExito = false;
+          this.router.navigate(['/turnoPaciente']);
+        }, 2000);
+      } else {
+        console.log("Turno ya seleccionado");
+      }
+    }, 1000);  // Asegúrate de darle suficiente tiempo a la suscripción para que se ejecute
   }
+
+  validarturno(horario: string, dia: string): void {
+    this.turnos.getTurnos().subscribe((data: any[]) => {
+      // Filtrar los turnos que coincidan con el horario y el día proporcionado
+      const turnoExistente = data.find((turno: any) => turno.horario === horario && turno.dia === dia);
+  
+      // Si ya existe un turno con el mismo horario y día, marcamos como no válido
+      if (turnoExistente) {
+        console.log("El turno ya está reservado.");
+        this.turnoValido = false;
+      } else {
+        console.log("El turno está disponible.");
+        this.turnoValido = true;
+      }
+    });
+  }
+  
 
   volverhome() {
     this.router.navigate(['/turnoPaciente']);
@@ -127,4 +196,6 @@ export class SolicitarturnoComponent {
   seleccionarEspecialidad(especialidad: any): void {
     this.especialidadSeleccionada = especialidad;
   }
+
+  
 }

@@ -4,16 +4,19 @@ import { DataService } from '../../../services/authUsers/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
+import { FilterPipe } from '../../pipes/filter.pipe';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-especialistas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FilterPipe],
   templateUrl: './especialistas.component.html',
   styleUrl: './especialistas.component.scss',
 })
 export class EspecialistasComponent {
   // Variables
+  searchText: string = '';
   diagnosticoArray: any[] = [];
   nombresEspecialistasArray: any[] = [];
   nombresFiltrados: any[] = []; // Inicialización como array vacío
@@ -30,7 +33,7 @@ export class EspecialistasComponent {
     private userService: DataService,
     private auth: Auth,
   ) {
-    this.dataNombres();
+    this.dataFiltros();
   }
 
   // Función para obtener los turnos del usuario
@@ -51,13 +54,12 @@ export class EspecialistasComponent {
               especialidad: turno.especialidad,
               horario: turno.horario,
               estado: turno.estado,
-              mensaje: turno.mensaje
+              mensaje: turno.mensaje,
+
             }));
 
           // Actualizar los turnos filtrados para la visualización
           this.nombresFiltrados = [...this.nombresEspecialistasArray];
-
-          console.log(this.nombresEspecialistasArray); // Verificar los turnos filtrados
         },
         error: (err) => {
           console.error('Error al obtener los turnos:', err);
@@ -65,6 +67,117 @@ export class EspecialistasComponent {
       });
     });
   }
+
+  historiaclinicaaray: any[] = [];
+  historiaEncontrada = false;
+
+  datahistoria() {
+    this.auth.onAuthStateChanged((user) => {
+      const usuarioActual = user?.email;
+
+      if (!usuarioActual) {
+        console.error('No se encontró un usuario autenticado.');
+        return;
+      }
+
+      this.doctorActual = usuarioActual;
+      console.log("entre");
+
+      // Llamar solo al servicio de historia clínica
+      this.turnos.getHistoriaClinica().subscribe({
+        next: (historiaClinica) => {
+          console.log('Datos recibidos:', historiaClinica);
+
+          // Filtrar y mapear las historias clínicas
+          const historiaFiltrada = historiaClinica
+            .filter((historia: any) => historia.emailEspecialsita === usuarioActual)
+            .map((historia: any) => ({
+              altura: historia.altura || '',
+              peso: historia.peso || '',
+              presion: historia.presion || '',
+              temperatura: historia.temperatura || '',
+            }));
+
+          console.log("Historias clínicas filtradas:", historiaFiltrada);
+          this.historiaclinicaaray = historiaFiltrada;
+        },
+        error: (err) => {
+          console.error('Error al obtener los datos de historia clínica:', err);
+        },
+      });
+    });
+  }
+
+  dataFiltros() {
+    this.auth.onAuthStateChanged((user) => {
+      const usuarioActual = user?.email;
+  
+      if (!usuarioActual) {
+        console.error('No se encontró un usuario autenticado.');
+        return;
+      }
+  
+      this.doctorActual = usuarioActual;
+      console.log("entre");
+  
+      // Llamar solo al servicio de historia clínica
+      this.turnos.getHistoriaClinica().subscribe({
+        next: (historiaClinica) => {
+          console.log('Datos recibidos:', historiaClinica);
+  
+          // Filtrar las historias clínicas por emaildoctor
+          const historiaFiltrada = historiaClinica
+            .filter((historia: any) => historia.emailEspecialsita === usuarioActual)
+            .map((historia: any) => ({
+              altura: historia.altura,
+              peso: historia.peso,
+              presion: historia.presion,
+              temperatura: historia.temperatura,
+              usuario: historia.paciente,
+              emaildoctor: historia.emailEspecialsita
+            }));
+  
+          console.log("Historias clínicas filtradas:", historiaFiltrada);
+          this.nombresEspecialistasArray = historiaFiltrada;
+  
+          // Llamar al servicio de turnos después de obtener la historia clínica
+          this.turnos.getTurnos().subscribe({
+            next: (turno) => {
+              console.log('Datos recibidos:', turno);
+  
+              // Filtrar los turnos por emaildoctor
+              const turnosFiltrados = turno
+                .filter((turno: any) => turno.emailEspecialsita === usuarioActual)
+                .map((turno: any) => ({
+                  paciente: turno.paciente,
+                  especialista: turno.especialista,
+                  especialidad: turno.especialidad,
+                  horario: turno.horario,
+                  estado: turno.estado,
+                  mensaje: turno.mensaje,
+                  emaildoctor: turno.emailEspecialsita
+                }));
+  
+              console.log("turnosFiltrados:", turnosFiltrados);
+  
+              // Unir ambos arrays (historias clínicas y turnos filtrados)
+              // Unir ambos arrays
+              const datosCombinados = historiaFiltrada.concat(turno);
+              console.log("Datos combinados:", datosCombinados);
+              this.nombresEspecialistasArray = datosCombinados;
+            },
+            error: (err) => {
+              console.error('Error al obtener los datos de turnos:', err);
+            },
+          });
+        },
+        error: (err) => {
+          console.error('Error al obtener los datos de historia clínica:', err);
+        },
+      });
+    });
+  }
+  
 
   cambiarEstado(estado: string, usuario: any) {
     console.log(usuario.paciente)
@@ -94,7 +207,6 @@ export class EspecialistasComponent {
 
     this.turnos.ingresarDiagnostico(turno.diagnostico, usuario)
     this.turnos.ingresarComentario(turno.comentarios, usuario)
-
 
     // Aquí puedes realizar el llamado al servicio para guardar los datos en el backend
     this.cambiarEstado('diagnosticado', turno); // Cambiar estado del turno
@@ -131,7 +243,6 @@ export class EspecialistasComponent {
     this.cambiarEstado('historiaClinica', turno); // 
     turno.mostrarFormularioHistoriaClinica = false;
     // Llamar al servicio para guardar la historia clínica en el backend
-
   }
 
   datodinamico1 = false;
@@ -145,53 +256,19 @@ export class EspecialistasComponent {
     this.datodinamico2 = true;
   }
 
-  verdiagnostico(usuario : string)
-  {
-    
-  }
+  verdiagnostico(usuario: string) {}
 
   verDiagnosticoTerminado(turno: any) {
     // Mostrar el formulario solo para el turno seleccionado
     this.nombresEspecialistasArray.forEach((t) => {
-      t.verDiagnosticoTerminado = false;
+      t.mostrarFormularioDiagnostico = false;
     });
-  
-    // Obtener los turnos
-    this.turnos.getTurnos().subscribe({
-      next: (data: any[]) => {
-        // Filtrar los turnos donde el paciente es el usuario actual
-        this.diagnosticoArray = data
-          .filter((t: any) => t.paciente) // Filtra turnos válidos
-          .map((t: any) => ({
-            paciente: t.paciente,
-            comentario: t.comentario,
-            diagnostico: t.diagnostico,
-          }));
-  
-        // Buscar el turno específico en la respuesta y asignar el diagnóstico
-        const turnoEncontrado = data.find((t: any) => t.id === turno.id);
-  
-        if (turnoEncontrado) {
-          turno.diagnostico = turnoEncontrado.diagnostico || "Sin diagnóstico";
-          turno.comentarios = turnoEncontrado.comentario || "Sin diagnóstico";
-        } else {
-          turno.diagnostico = "No se encontró información";
-        }
-      },
-      error: (err) => {
-        console.error("Error al obtener los turnos:", err);
-        turno.diagnostico = "Error al obtener diagnóstico";
-      },
-    });
-  
-    // Mostrar diagnóstico solo para el turno seleccionado
-    turno.verDiagnosticoTerminado = true;
-  }
-  
-
-  ocultarDiagnosticoTerminado(turno: any) {
-    turno.verDiagnosticoTerminado = false;
+    turno.mostrarFormularioDiagnostico = true;
   }
 
+  // Código de envío
+  toggleMensajeExito() {
+    this.mensajeExito = !this.mensajeExito;
+  }
 
 }
