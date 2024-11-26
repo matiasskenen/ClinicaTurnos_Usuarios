@@ -5,7 +5,6 @@ import { Auth } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable'; // Make sure this import is added
 
 @Component({
   selector: 'app-paciente-perfil',
@@ -15,15 +14,14 @@ import 'jspdf-autotable'; // Make sure this import is added
   styleUrl: './paciente-perfil.component.scss',
 })
 export class PacientePerfilComponent {
-  // Variables
   diagnosticoArray: any[] = [];
   nombresEspecialistasArray: any[] = [];
-  nombresFiltrados: any[] = []; // Inicialización como array vacío
+  nombresFiltrados: any[] = [];
   especialidadSeleccionada: string = '';
   especialista: any = {};
   turnosDisponibles: string[] = [];
   turnoSeleccionado: string = '';
-  mensajeExito: boolean = false; // Para mostrar el mensaje de éxito
+  mensajeExito: boolean = false;
   pacienteFiltrado = "";
   pacienteActual: any;
   historiaClinicaSeleccionada: any = null;
@@ -36,23 +34,18 @@ export class PacientePerfilComponent {
     this.init();
   }
 
-  // Función para obtener los turnos del usuario y luego las historias clínicas
   async init() {
-    await this.dataNombres(); // Espera a que dataNombres termine
-    this.mostrarHistoriaClinica(); // Después, llama a mostrarHistoriaClinica
+    await this.dataNombres();
+    this.mostrarHistoriaClinica();
   }
 
-  // Función para obtener los turnos del usuario
   async dataNombres() {
     return new Promise<void>((resolve, reject) => {
       this.auth.onAuthStateChanged((user) => {
         this.pacienteActual = user?.email;
-
-        // Llamada al servicio para obtener los turnos
         this.turnos.getPacientes().subscribe({
           next: (data: any[]) => {
-            // Filtrar los turnos donde el paciente es el usuario actual
-            this.nombresEspecialistasArray = data // Filtra por el paciente
+            this.nombresEspecialistasArray = data
               .map((turno: any) => ({
                 nombre: turno.nombre,
                 dni: turno.dni,
@@ -62,32 +55,25 @@ export class PacientePerfilComponent {
                 email: turno.email,
                 doctoremail: turno.emailEspecialsita
               }));
-
-            // Actualizar los turnos filtrados para la visualización
             this.nombresFiltrados = [...this.nombresEspecialistasArray];
-            resolve(); // Resuelve cuando los datos de turnos estén disponibles
+            resolve();
           },
           error: (err) => {
             console.error('Error al obtener los turnos:', err);
-            reject(err); // Rechaza en caso de error
+            reject(err);
           },
         });
       });
     });
   }
 
-  // Función para mostrar la historia clínica del paciente
   mostrarHistoriaClinica() {
     console.log("user " + this.pacienteActual);
-
     this.turnos.getHistoriaClinica().subscribe({
       next: (data: any[]) => {
-        // Filtrar todas las historias clínicas del paciente
         const historiasFiltradas = data.filter(
           (historia: any) => historia.paciente === this.pacienteActual
         );
-
-        // Si se encuentran historias clínicas, procesarlas
         if (historiasFiltradas.length > 0) {
           this.historiaClinicaSeleccionada = historiasFiltradas.map((historia: any) => {
             const datosDinamicos = Object.entries(historia)
@@ -104,8 +90,7 @@ export class PacientePerfilComponent {
                     'observaciones',
                   ].includes(key)
               )
-              .map(([titulo, valor]) => ({ titulo, valor })); // Extraer los datos dinámicos
-
+              .map(([titulo, valor]) => ({ titulo, valor }));
             return {
               altura: historia.altura,
               peso: historia.peso,
@@ -114,15 +99,14 @@ export class PacientePerfilComponent {
               fecha: historia.fecha,
               doctor: historia.doctor,
               observaciones: historia.observaciones || 'Sin observaciones',
-              datosDinamicos, // Datos dinámicos
+              datosDinamicos,
             };
           });
         } else {
           console.log('No se encontraron historias clínicas para este paciente.');
-          this.historiaClinicaSeleccionada = []; // Limpiar si no hay resultados
+          this.historiaClinicaSeleccionada = [];
         }
-
-        console.log(this.historiaClinicaSeleccionada); // Verificar el resultado
+        console.log(this.historiaClinicaSeleccionada);
       },
       error: (err) => {
         console.error('Error al obtener las historias clínicas:', err);
@@ -130,38 +114,41 @@ export class PacientePerfilComponent {
     });
   }
 
-  // Método para descargar la historia clínica en PDF
-  descargarHistoriaClinica() {
+  ddescargarHistoriaClinica() {
     const doc = new jsPDF();
-
-    // Título del PDF
-    doc.setFontSize(18);
+    doc.setFontSize(20);
+    doc.setTextColor(0, 102, 204);
     doc.text('Historias Clínicas de ' + this.pacienteActual, 20, 20);
-
-    // Definir encabezado de la tabla
-    const columns = ['Fecha', 'Doctor', 'Peso', 'Altura', 'Presión', 'Temperatura', 'Observaciones'];
-    const row: any[] = [];
-
-    // Llenar las filas de la tabla con las historias clínicas
+    doc.setDrawColor(0, 102, 204);
+    doc.setLineWidth(0.5);
+    doc.line(20, 25, 190, 25);
+    let yPosition = 40;
     this.historiaClinicaSeleccionada.forEach((historia: any) => {
-      row.push([
-        historia.fecha,
-        historia.doctor,
-        historia.peso,
-        historia.altura,
-        historia.presion,
-        historia.temperatura,
-        historia.observaciones || 'Sin observaciones'
-      ]);
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Fecha: ${historia.fecha}`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Doctor: ${historia.doctor}`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Peso: ${historia.peso} kg`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Altura: ${historia.altura} cm`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Presión: ${historia.presion} mmHg`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Temperatura: ${historia.temperatura} °C`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Observaciones: ${historia.observaciones}`, 20, yPosition);
+      yPosition += 20;
+      if (yPosition > 250) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.2);
+      doc.line(20, yPosition, 190, yPosition);
+      yPosition += 5;
     });
-
-    // Usar autoTable para agregar la tabla al PDF
-    doc.auto({
-      head: [columns],
-      body:  row
-    });
-
-    // Guardar el archivo PDF con el nombre correspondiente
     doc.save('historias_clinicas_' + this.pacienteActual + '.pdf');
   }
 }

@@ -24,3 +24,37 @@
     font-size: 14px;
     margin: 0;
   }
+
+  /* Animación de fade-in */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animación de fade-out */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Estilo del mensaje de éxito */
+.alert-success {
+  animation: fadeIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 4s;
+}
+
+/* Estilo del mensaje de error */
+.alert-danger {
+  animation: fadeIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 4s;
+}

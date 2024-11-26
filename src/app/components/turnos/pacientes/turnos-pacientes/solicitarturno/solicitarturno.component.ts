@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../../../../services/authUsers/data.service';
-
+import { FiltrarTurnosPipe } from '../../../../filtrar-turnos.pipe';
 @Component({
   selector: 'app-solicitarturno',
   standalone: true,

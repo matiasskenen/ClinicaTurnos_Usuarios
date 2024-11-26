@@ -1,35 +1,44 @@
 <div class="container mt-5">
     <!-- Mi Perfil -->
     <h2 class="text-center mb-4">Mi Perfil</h2>
-    
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Información Personal</h5>
-            <ul class="list-group">
-              <li class="list-group-item">
-                <strong>Nombre:</strong> Juan
-              </li>
-              <li class="list-group-item">
-                <strong>Apellido:</strong> Pérez
-              </li>
-              <li class="list-group-item">
-                <strong>Edad:</strong> 30 años
-              </li>
-              <li class="list-group-item">
-                <strong>DNI:</strong> 12345678
-              </li>
-              <li class="list-group-item">
-              </li>
-            </ul>
   
-            <div class="text-center mt-4">
-                <button class="btn btn-primary" (click)="descargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
+    <div *ngFor="let turno of nombresEspecialistasArray">
+      <ng-container *ngIf="turno.email == pacienteActual">
+        <div class="text-center">
+          <img
+            src="{{ turno.imagen }}"
+            class="img-thumbnail"
+            style="width: 200px; height: 200px; object-fit: cover;" />
+        </div>
+  
+        <div class="row">
+          <div class="col-md-6 offset-md-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Información Personal</h5>
+                <ul class="list-group">
+                  <li class="list-group-item">
+                    <strong>Nombre:</strong> {{turno.nombre}}
+                  </li>
+                  <li class="list-group-item">
+                    <strong>Apellido:</strong> {{turno.apellido}}
+                  </li>
+                  <li class="list-group-item">
+                    <strong>Edad:</strong> {{turno.edad}}
+                  </li>
+                  <li class="list-group-item">
+                    <strong>DNI:</strong> {{turno.dni}}
+                  </li>
+                </ul>
+  
+                <div class="text-center mt-4">
+                  <button class="btn btn-primary" (click)="ddescargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   
     <!-- Pacientes Atendidos -->
@@ -42,12 +51,10 @@
             <th>DNI</th>
             <th>Edad</th>
             <th>Imagen</th>
-            <th>Historia Clínica</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let turno of nombresEspecialistasArray">
-            <!-- Verifica si el email coincide con el paciente actual -->
             <ng-container *ngIf="turno.email == pacienteActual">
               <td>{{ turno.nombre + ' ' + turno.apellido }}</td>
               <td>{{ turno.dni }}</td>
@@ -59,12 +66,10 @@
                   class="img-thumbnail"
                   style="width: 60px; height: 60px; object-fit: cover;" />
               </td>
-              <td>
-                <a href="/historia-clinica/{{ turno.dni }}" class="btn btn-info">Ver Historia Clínica</a>
-              </td>
             </ng-container>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+  
