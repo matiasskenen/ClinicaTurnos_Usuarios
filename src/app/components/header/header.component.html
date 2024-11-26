@@ -16,6 +16,9 @@
               <li class="nav-item" *ngIf="perfil === 'especialista'">
                   <a class="nav-link" (click)="navigateTo('turnosEspecialistas')">Turnos Especialistas</a>
               </li>
+              <li class="nav-item" *ngIf="perfil === 'especialista'">
+                <a class="nav-link" (click)="navigateTo('pacientesAtendidos')">Pacientes</a>
+                </li>
               <li class="nav-item" *ngIf="perfil === 'admin'">
                   <a class="nav-link" (click)="navigateTo('turnoAdmin')">Turno Admin</a>
               </li>

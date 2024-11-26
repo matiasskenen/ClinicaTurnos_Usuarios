@@ -89,6 +89,7 @@ export class HeaderComponent {
       case 'perfilEspecialista': this.router.navigate(['/perfilEspecialista']); break;
       case 'perfilAdmin': this.router.navigate(['/perfilAdmin']); break;
       case 'seccionusuarios': this.router.navigate(['/seccionusuarios']); break;
+      case 'pacientesAtendidos': this.router.navigate(['/pacientesAtendidos']); break;
       default: console.log('Ruta no encontrada'); break;
     }
   }

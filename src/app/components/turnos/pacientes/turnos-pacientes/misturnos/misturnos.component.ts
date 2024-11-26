@@ -82,6 +82,6 @@ export class MisturnosComponent {
 
   cambiarEstado(estado : string, usuario : any)
   {
-    this.turnos.ingresarEstado(estado, usuario.paciente)
+    this.turnos.ingresarEstado(estado, usuario.paciente, usuario.horario)
   }
 }

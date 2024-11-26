@@ -9,6 +9,7 @@ import { PacientePerfilComponent } from './components/perfiles/paciente/paciente
 import { EspecialistaPerfilComponent } from './components/perfiles/especialista/especialista-perfil/especialista-perfil.component';
 import { AdminPerfilComponent } from './components/perfiles/admin/admin-perfil/admin-perfil.component';
 import { SeccionusuariosComponent } from './components/seccionusuarios/seccionusuarios.component';
+import { PacientesAtendidosComponent } from './components/pacientes-atendidos/pacientes-atendidos.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: "full" },
@@ -24,6 +25,8 @@ export const routes: Routes = [
     { path: 'perfilEspecialista', component: EspecialistaPerfilComponent },
     { path: 'perfilAdmin', component: AdminPerfilComponent },
 
+
+    { path: 'pacientesAtendidos', component: PacientesAtendidosComponent },
     
     {
         path: 'turnos',

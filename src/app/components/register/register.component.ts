@@ -242,9 +242,7 @@ export class RegisterComponent {
   especialidades: string[] = [
     'Cardiología',
     'Dermatología',
-    'Neurología',
     'Pediatría',
-    'Traumatología',
     'Otra',
   ];
 

@@ -64,7 +64,7 @@ export class AdminComponent {
 
   cambiarEstado(estado : string, usuario : any)
   {
-    this.turnos.ingresarEstado(estado, usuario)
+    this.turnos.ingresarEstado(estado, usuario.paciente, usuario.horario)
   }
 
 }

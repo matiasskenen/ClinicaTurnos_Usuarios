@@ -71,7 +71,9 @@ export class TurnosService {
         horario: horario,
         emailEspecialsita : email,
         estado: "pendiente",
-        mensaje: ""
+        mensaje: "",
+        diagnostico : "",
+        comentario : ""
       };
 
 
@@ -96,38 +98,69 @@ export class TurnosService {
       return collectionData(filteredQuery); // Retorna el observable
     }
 
-    ingresarEstado(estado : string, paciente : string)
-    {
-      // Suponiendo que deseas buscar por email
-      const nombreBuscado = paciente; // Cambia esto con el email que buscas
+    getPacientes(): Observable<any[]> {
+      const col = collection(this.firestore, "pacientes");
+  
+      const filteredQuery = query(
+        col
+      );
+  
+      return collectionData(filteredQuery); // Retorna el observable
+    }
 
+    getHistoriaClinica(): Observable<any[]> {
+      const col = collection(this.firestore, "historiaClinica");
+  
+      const filteredQuery = query(
+        col
+      );
+  
+      return collectionData(filteredQuery); // Retorna el observable
+    }
+
+
+    
+
+    ingresarEstado(estado: string, paciente: string, horario: string) {
       // Crear una referencia a la colección
       const coleccionRef = collection(this.firestore, "turnos");
-
-      // Crear una consulta que busque el documento donde el email coincide
-      const consulta = query(coleccionRef, where("paciente", "==", nombreBuscado));
-
+    
+      // Crear una consulta que busque los documentos donde el paciente y el horario coinciden
+      const consulta = query(
+        coleccionRef,
+        where("paciente", "==", paciente),
+        where("horario", "==", horario) // Validamos también el horario
+      );
+    
       // Obtener los documentos que coinciden con la consulta
       getDocs(consulta).then((querySnapshot) => {
         if (!querySnapshot.empty) {
           // Si se encuentra al menos un documento, tomamos el primero
           const docSnap = querySnapshot.docs[0]; // Aquí obtenemos el primer documento
-          const idEspecialista = docSnap.id; // Obtenemos el id del documento encontrado
-
-          // Ahora puedes actualizar el campo 'nombre' de este documento
-          const especialistaRef = doc(this.firestore, "turnos", idEspecialista);
+          const idTurno = docSnap.id; // Obtenemos el id del documento encontrado
+    
+          // Ahora puedes actualizar el campo 'estado' de este documento
+          const turnoRef = doc(this.firestore, "turnos", idTurno);
           
-          updateDoc(especialistaRef, {
-            estado: estado // Cambia esto con el nuevo nombre que deseas asignar
+          // Actualizamos el estado
+          updateDoc(turnoRef, {
+            estado: estado // Actualizamos el estado con el nuevo valor
           })
-
+          .then(() => {
+            console.log('Estado actualizado con éxito');
+          })
+          .catch((error) => {
+            console.error('Error al actualizar el estado:', error);
+          });
+    
         } else {
-          console.log("No se encontró el turno con ese email.");
+          console.log("No se encontró el turno con el paciente y horario especificados.");
         }
       }).catch((error) => {
         console.error("Error al realizar la consulta:", error);
       });
     }
+    
 
     ingresarMensaje(mensaje : string, paciente : string)
     {
@@ -161,5 +194,132 @@ export class TurnosService {
         console.error("Error al realizar la consulta:", error);
       });
     }
+
+    ingresarDiagnostico(mensaje : string, paciente : string)
+    {
+      // Suponiendo que deseas buscar por email
+      const nombreBuscado = paciente; // Cambia esto con el email que buscas
+
+      // Crear una referencia a la colección
+      const coleccionRef = collection(this.firestore, "turnos");
+
+      // Crear una consulta que busque el documento donde el email coincide
+      const consulta = query(coleccionRef, where("paciente", "==", nombreBuscado));
+
+      // Obtener los documentos que coinciden con la consulta
+      getDocs(consulta).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          // Si se encuentra al menos un documento, tomamos el primero
+          const docSnap = querySnapshot.docs[0]; // Aquí obtenemos el primer documento
+          const idEspecialista = docSnap.id; // Obtenemos el id del documento encontrado
+
+          // Ahora puedes actualizar el campo 'nombre' de este documento
+          const especialistaRef = doc(this.firestore, "turnos", idEspecialista);
+          
+          updateDoc(especialistaRef, {
+            diagnostico: mensaje // Cambia esto con el nuevo nombre que deseas asignar
+          })
+
+        } else {
+          console.log("No se encontró el turno con ese email.");
+        }
+      }).catch((error) => {
+        console.error("Error al realizar la consulta:", error);
+      });
+    }
+
+    ingresarComentario(mensaje : string, paciente : string)
+    {
+      // Suponiendo que deseas buscar por email
+      const nombreBuscado = paciente; // Cambia esto con el email que buscas
+
+      // Crear una referencia a la colección
+      const coleccionRef = collection(this.firestore, "turnos");
+
+      // Crear una consulta que busque el documento donde el email coincide
+      const consulta = query(coleccionRef, where("paciente", "==", nombreBuscado));
+
+      // Obtener los documentos que coinciden con la consulta
+      getDocs(consulta).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          // Si se encuentra al menos un documento, tomamos el primero
+          const docSnap = querySnapshot.docs[0]; // Aquí obtenemos el primer documento
+          const idEspecialista = docSnap.id; // Obtenemos el id del documento encontrado
+
+          // Ahora puedes actualizar el campo 'nombre' de este documento
+          const especialistaRef = doc(this.firestore, "turnos", idEspecialista);
+          
+          updateDoc(especialistaRef, {
+            comentario: mensaje // Cambia esto con el nuevo nombre que deseas asignar
+          })
+
+        } else {
+          console.log("No se encontró el turno con ese email.");
+        }
+      }).catch((error) => {
+        console.error("Error al realizar la consulta:", error);
+      });
+    }
+
+    getImagenesEspecialdiad(): Observable<any[]> {
+      const col = collection(this.firestore, "imagenesEspecialidad");
+  
+      const filteredQuery = query(
+        col
+      );
+  
+      return collectionData(filteredQuery); // Retorna el observable
+    }
+
+    sendHistoriaClinica(
+      doctor: string,
+      paciente: string,
+      altura: string,
+      peso: string,
+      temperatura: string,
+      presion: string,
+      NombredatodinamicoUno: string,
+      datodinamicoUno: string,
+      NombredatodinamicoDos: string,
+      datodinamicoDos: string
+    ) {
+      let col = collection(this.firestore, "historiaClinica");
+    
+      // Crear el objeto base
+      let obj: any = {
+        doctor: doctor || "No especificado",
+        paciente: paciente || "No especificado",
+        altura: altura || "No especificado",
+        peso: peso || "No especificado",
+        fecha: new Date().toISOString().split('T')[0], // Formato YYYY-MM-DD
+      };
+    
+      // Agregar campos opcionales si existen y no son undefined
+      if (temperatura && temperatura !== "undefined") {
+        obj["temperatura"] = temperatura;
+      }
+    
+      if (presion && presion !== "undefined") {
+        obj["presion"] = presion;
+      }
+    
+      if (NombredatodinamicoUno && datodinamicoUno && datodinamicoUno !== "undefined") {
+        obj[NombredatodinamicoUno] = datodinamicoUno;
+      }
+    
+      if (NombredatodinamicoDos && datodinamicoDos && datodinamicoDos !== "undefined") {
+        obj[NombredatodinamicoDos] = datodinamicoDos;
+      }
+    
+      // Enviar a Firestore
+      addDoc(col, obj)
+        .then(() => {
+          console.log("historiaClinica agregada con éxito");
+        })
+        .catch((error) => {
+          console.error("Error al agregar historiaClinica: ", error);
+        });
+    }
+    
 
 }
