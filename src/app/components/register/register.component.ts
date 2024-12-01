@@ -19,7 +19,7 @@ import { sendEmailVerification } from 'firebase/auth';
 import { getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
 import { Storage } from '@angular/fire/storage';
 
-declare const grecaptcha: any;
+
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -27,6 +27,7 @@ declare const grecaptcha: any;
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
+
 export class RegisterComponent {
   public email: string = '';
   public password: string = '';
@@ -48,7 +49,6 @@ export class RegisterComponent {
 
   otro = false;
 
-  sitekey: string = "6LfqMoEqAAAAAK9FQ8HZZqF3T2ZN0TClF_CgYwJv";
 
 
   imageName: string = '';
@@ -64,6 +64,25 @@ export class RegisterComponent {
   ) {
 
 
+  }
+
+  captchaCode: string = '';
+  userInput: string = '';
+  captchaVerified: boolean | null = null;
+
+   // Generar CAPTCHA
+   generateCaptcha(): void {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    this.captchaCode = Array.from({ length: 6 }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    this.userInput = '';
+    this.captchaVerified = null;
+    this.captchaCode;
+  }
+
+  // Verificar CAPTCHA
+  verifyCaptcha(): void {
+    console.log(this.captchaCode)
+    this.captchaVerified = this.userInput === this.captchaCode;
   }
 
   ngOnInit(): void {
@@ -86,9 +105,13 @@ export class RegisterComponent {
       obrasocial: new FormControl(''),
       especialidad: new FormControl(''),
       especialidadOtro: new FormControl(''),
-      recaptcha: new FormControl('', Validators.required)
+      captchaInput: new FormControl('', Validators.required)
 
     });
+  }
+
+  get captchaInput() {
+    return this.form.get('recaptcha');
   }
 
   get recaptcha() {

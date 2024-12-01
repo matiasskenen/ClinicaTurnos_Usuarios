@@ -239,7 +239,7 @@ guardarHistoriaClinica(turno: any, usuario: any) {
   console.log('Temperatura:', turno.NombredatodinamicoDos);
   console.log('Presión Arterial:', turno.datodinamicoDos);
 
-  this.turnos.sendHistoriaClinica(this.doctorActual, turno.paciente, turno.altura, turno.peso, turno.temperatura, turno.presion, turno.temperatura, turno.NombredatodinamicoUno, turno.NombredatodinamicoDos, turno.datodinamicoDos)
+  //this.turnos.ingresarHistoriaClinica(this.doctorActual, turno.paciente, turno.altura, turno.peso, turno.temperatura, turno.presion, turno.temperatura, turno.NombredatodinamicoUno, turno.NombredatodinamicoDos, turno.datodinamicoDos, usuario)
   this.cambiarEstado('historiaClinica', turno); // 
   turno.mostrarFormularioHistoriaClinica = false;
   // Llamar al servicio para guardar la historia clínica en el backend

@@ -8,6 +8,9 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideHttpClient } from '@angular/common/http';
 import { environmentConfig } from './environmentConfig';
 
+// Importar la configuración para reCAPTCHA
+
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),

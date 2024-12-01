@@ -11,7 +11,7 @@ import {
   doc,
   addDoc,
 } from '@angular/fire/firestore';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { orderBy, query, where } from 'firebase/firestore';
 import { forkJoin, Observable, Subscription } from 'rxjs';
@@ -19,11 +19,12 @@ import { DataService } from '../../services/authUsers/data.service';
 import { map } from 'rxjs/operators';
 import { signOut, User } from 'firebase/auth';
 import { TurnosService } from '../../services/turnos/turnos.service';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxCaptchaModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -38,6 +39,7 @@ export class LoginComponent {
 
   role: string = '';
 
+  siteKey : string = "6Lfpl44qAAAAAGbb4Wz0Ns6TdgnDG4YjaStxk3rp"
   verficado = false;
 
   users = [
@@ -56,6 +58,8 @@ export class LoginComponent {
     private firestore: Firestore,
     private turnos: TurnosService,
   ) {}
+
+
 
   loginUser() {
     this.userService.setUserVerificado(false);
@@ -79,7 +83,7 @@ export class LoginComponent {
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
               })
-              this.router.navigate(['/home']);
+              this.router.navigate(['/perfilPaciente']);
             } else {
 
               console.log(res.user.emailVerified)

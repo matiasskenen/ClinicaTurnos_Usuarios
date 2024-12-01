@@ -1,12 +1,50 @@
 <body>
-    <div class="background">
-      <div class="content">
-        <!-- Botones -->
-        <h1 class="mb-4">Bienvenido a Nuestra Clínica</h1>
-        <div class="d-flex justify-content-center gap-3" *ngIf="userVerificado == false">
-          <label (click)="navigateTo('login')" class="btn btn-primary btn-lg px-4">Iniciar Sesión</label>
-          <label (click)="navigateTo('register')" class="btn btn-outline-primary btn-lg px-4">Registrarse</label>
-        </div>
+  <!-- Banner de Bienvenida -->
+  <header class="banner">
+    <div class="banner-content">
+      <h1>¡Bienvenido a Nuestra Clínica!</h1>
+      <p>
+        Nos complace ofrecerte atención médica de calidad con un equipo altamente capacitado. ¡Estamos aquí para cuidar de ti y tu familia!
+      </p>
+
+      <div class="d-flex justify-content-center gap-3" *ngIf="userVerificado == false">
+        <label (click)="navigateTo('login')" class="btn btn-primary btn-lg px-4">Iniciar Sesión</label>
+        <label (click)="navigateTo('register')" class="btn btn-outline-primary btn-lg px-4">Registrarse</label>
       </div>
     </div>
-  </body>
+  </header>
+
+  <!-- Sección de Servicios y Centro de Atención en dos columnas -->
+  <section class="services-contact">
+    <div class="section-header">
+      <h2>Servicios y Centro de Atención</h2>
+      <p>Descubre los servicios que ofrecemos y encuentra nuestro centro de atención.</p>
+    </div>
+    <div class="sections">
+      <!-- Servicios -->
+      <div class="service">
+        <h3>Servicios</h3>
+        <div class="card">
+          <h4>Consultas Generales</h4>
+          <p>Atención médica para todas las edades.</p>
+        </div>
+        <div class="card">
+          <h4>Urgencias</h4>
+          <p>Atención inmediata en caso de emergencia.</p>
+        </div>
+        <div class="card">
+          <h4>Exámenes Médicos</h4>
+          <p>Exámenes completos para mantener tu salud en óptimas condiciones.</p>
+        </div>
+      </div>
+      
+      <!-- Centro de Atención -->
+      <div class="contact">
+        <h3>Centro de Atención</h3>
+        <p><strong>Dirección:</strong> Calle Ejemplo 123, Ciudad</p>
+        <p><strong>Teléfono:</strong> +123 456 7890</p>
+        <p><strong>Correo Electrónico:</strong> contacto.com</p>
+      </div>
+    </div>
+  </section>
+</body>

@@ -20,6 +20,13 @@
                             <br>
                             <label for="email" class="form-label">Correo electrónico</label>
                             <input type="email" class="form-control" id="email" disabled placeholder="{{user}}">
+
+                            <label for="email" class="form-label">Nombre y Apellido</label>
+                            <input type="email" class="form-control" id="email" disabled placeholder="{{nombredoctor + ' ' + apellidodoctor}}">
+
+                            <label for="email" class="form-label">Dni</label>
+                            <input type="email" class="form-control" id="email" disabled placeholder="{{dni}}">
+
                         </div>
 
                         <div class="mb-3">
@@ -85,7 +92,7 @@
                                 <br>
 
                                 <select name="Departamente" (change)="changeDepartament($event)" class="form-control">
-                                    <option>--Select--</option>
+                                    <option>--Seleccionar--</option>
                                     <option *ngFor="let dep of DepartamentList">
                                         {{dep}}
                                     </option>

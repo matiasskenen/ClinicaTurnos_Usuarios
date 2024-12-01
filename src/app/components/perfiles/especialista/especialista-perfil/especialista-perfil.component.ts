@@ -37,6 +37,9 @@ export class EspecialistaPerfilComponent {
   getHorario: any;
   especialidad1 = "";
   especialidad2 = "";
+  nombredoctor = "";
+  apellidodoctor = "";
+  dni = "";
 
   changeDepartament(e: any) {
     if (e.target.value == "9:00 a 17:00") {
@@ -70,6 +73,9 @@ export class EspecialistaPerfilComponent {
           this.getHorario = item.horario;
           this.imagenusuario = item.imagen;
           this.diasusuario = item.laboral;
+          this.nombredoctor = item.nombre;
+          this.apellidodoctor = item.apellido;
+          this.dni = item.dni;
           
           // Accediendo a las claves del objeto especialista
           const especialistas = Object.keys(item.especialista);

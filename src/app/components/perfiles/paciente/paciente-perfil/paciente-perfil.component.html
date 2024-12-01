@@ -1,75 +1,72 @@
 <div class="container mt-5">
-    <!-- Mi Perfil -->
-    <h2 class="text-center mb-4">Mi Perfil</h2>
-  
-    <div *ngFor="let turno of nombresEspecialistasArray">
-      <ng-container *ngIf="turno.email == pacienteActual">
-        <div class="text-center">
-          <img
-            src="{{ turno.imagen }}"
-            class="img-thumbnail"
-            style="width: 200px; height: 200px; object-fit: cover;" />
-        </div>
-  
-        <div class="row">
-          <div class="col-md-6 offset-md-3">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Información Personal</h5>
-                <ul class="list-group">
-                  <li class="list-group-item">
-                    <strong>Nombre:</strong> {{turno.nombre}}
-                  </li>
-                  <li class="list-group-item">
-                    <strong>Apellido:</strong> {{turno.apellido}}
-                  </li>
-                  <li class="list-group-item">
-                    <strong>Edad:</strong> {{turno.edad}}
-                  </li>
-                  <li class="list-group-item">
-                    <strong>DNI:</strong> {{turno.dni}}
-                  </li>
-                </ul>
-  
-                <div class="text-center mt-4">
-                  <button class="btn btn-primary" (click)="ddescargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
-                </div>
-              </div>
+  <!-- Mi Perfil -->
+  <h2 class="text-center mb-4">Mi Perfil</h2>
+
+  <div *ngFor="let turno of nombresEspecialistasArray">
+    <ng-container *ngIf="turno.email == pacienteActual">
+      <div class="profile-image-container text-center">
+        <img
+          src="{{ turno.imagen }}"
+          class="profile-image"
+        />
+      </div>
+
+      <div class="profile-info">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Información Personal</h5>
+            <ul class="list-group">
+              <li class="list-group-item">
+                <strong>Nombre:</strong> {{turno.nombre}}
+              </li>
+              <li class="list-group-item">
+                <strong>Apellido:</strong> {{turno.apellido}}
+              </li>
+              <li class="list-group-item">
+                <strong>Edad:</strong> {{turno.edad}}
+              </li>
+              <li class="list-group-item">
+                <strong>DNI:</strong> {{turno.dni}}
+              </li>
+            </ul>
+
+            <div class="text-center mt-4">
+              <button class="btn-download" (click)="ddescargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
             </div>
           </div>
         </div>
-      </ng-container>
-    </div>
-  
-    <!-- Pacientes Atendidos -->
-    <h1 class="text-center mt-5 mb-4">Pacientes Atendidos</h1>
-    <div class="table-responsive">
-      <table class="table table-striped table-bordered">
-        <thead class="table-dark">
-          <tr>
-            <th>Nombre Completo</th>
-            <th>DNI</th>
-            <th>Edad</th>
-            <th>Imagen</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let turno of nombresEspecialistasArray">
-            <ng-container *ngIf="turno.email == pacienteActual">
-              <td>{{ turno.nombre + ' ' + turno.apellido }}</td>
-              <td>{{ turno.dni }}</td>
-              <td>{{ turno.edad }}</td>
-              <td>
-                <img
-                  src="{{ turno.imagen }}"
-                  alt="Imagen de {{ turno.nombre }}"
-                  class="img-thumbnail"
-                  style="width: 60px; height: 60px; object-fit: cover;" />
-              </td>
-            </ng-container>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </div>
+    </ng-container>
   </div>
-  
+
+  <!-- Pacientes Atendidos -->
+  <h1 class="text-center mt-5 mb-4">Pacientes Atendidos</h1>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre Completo</th>
+          <th>DNI</th>
+          <th>Edad</th>
+          <th>Imagen</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let turno of nombresEspecialistasArray">
+          <ng-container *ngIf="turno.email == pacienteActual">
+            <td>{{ turno.nombre + ' ' + turno.apellido }}</td>
+            <td>{{ turno.dni }}</td>
+            <td>{{ turno.edad }}</td>
+            <td>
+              <img
+                src="{{ turno.imagen }}"
+                alt="Imagen de {{ turno.nombre }}"
+                class="patient-image"
+              />
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

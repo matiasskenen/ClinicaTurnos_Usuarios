@@ -1,51 +1,51 @@
-<div class="container text-center mt-5">
+
+  <div class="container text-center mt-5">
     <h1 class="mb-4">Buscar Turnos</h1>
     <div class="row justify-content-center">
-    <div class="col-md-6">
+      <div class="col-md-6">
         <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Buscar por Especialidad">
+          <input type="text" class="form-control" placeholder="Buscar por Especialidad">
         </div>
         <div class="mb-3">
-        <input type="text" class="form-control" placeholder="Buscar por Especialista">
+          <input type="text" class="form-control" placeholder="Buscar por Especialista">
         </div>
         <button class="btn btn-primary btn-lg w-100">Buscar</button>
-    </div>
-    </div>
 
-
-  <li *ngFor="let turno of nombresEspecialistasArray" class="list-group-item shadow-sm mb-3 p-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <div *ngIf="turno.estado != 'eliminado'">
-        <h4 class="text-primary mb-1">{{ turno.especialidad }}</h4>
-        <p class="mb-1"><strong>{{ turno.paciente }}</strong> - {{ turno.horario }}</p>
-      </div>
-      <div *ngIf="turno.estado == 'aceptado'">
-        <button
-        class="btn btn-outline-danger btn-sm me-2"
-        (click)="cambiarEstado('cancelado', turno.paciente)">
-        <i class="bi bi-x-circle"></i> Cancelar
-      </button>
-      </div>
-      <div *ngIf="turno.estado == 'pendiente'">
-        <button disabled
-        class="btn btn-outline-primary btn-sm me-2"
-        (click)="cambiarEstado('cancelado', turno.paciente)">
-        <i class="bi bi-x-circle"></i> PENDIENTE
-      </button>
-      </div>
-      <div *ngIf="turno.estado == 'cancelado' || turno.estado == 'eliminado'">
-        <label>Estado: {{turno.estado}}</label>
-        <br>
-        <label>Comentario: {{turno.mensaje}}</label>
       </div>
 
     </div>
-  </li>
-  
-  <!-- Si no hay turnos disponibles para el usuario -->
-  <div *ngIf="nombresEspecialistasArray.length === 0" class="alert alert-warning mt-3">
-    <strong>¡Atención!</strong> No tienes turnos disponibles.
+
+
+    <li *ngFor="let turno of nombresEspecialistasArray" class="tarjetas list-group-item shadow-sm mb-3 p-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div *ngIf="turno.estado != 'eliminado'">
+          <h4 class="text-primary mb-1">{{ turno.especialidad }}</h4>
+          <p class="mb-1"><strong>{{ turno.paciente }}</strong> - {{ turno.horario }}</p>
+        </div>
+        <div *ngIf="turno.estado == 'aceptado'">
+          <button class="btn btn-outline-danger btn-sm me-2" (click)="cambiarEstado('cancelado', turno.paciente)">
+            <i class="bi bi-x-circle"></i> Cancelar
+          </button>
+        </div>
+        <div *ngIf="turno.estado == 'pendiente'">
+          <button disabled class="btn btn-outline-primary btn-sm me-2"
+            (click)="cambiarEstado('cancelado', turno.paciente)">
+            <i class="bi bi-x-circle"></i> PENDIENTE
+          </button>
+        </div>
+        <div *ngIf="turno.estado == 'cancelado' || turno.estado == 'eliminado'">
+          <label>Estado: {{turno.estado}}</label>
+          <br>
+          <label>Comentario: {{turno.mensaje}}</label>
+        </div>
+
+      </div>
+    </li>
+
+    <!-- Si no hay turnos disponibles para el usuario -->
+    <div *ngIf="nombresEspecialistasArray.length === 0" class="alert alert-warning mt-3">
+      <strong>¡Atención!</strong> No tienes turnos disponibles.
+    </div>
+
+
   </div>
-
-
-</div>

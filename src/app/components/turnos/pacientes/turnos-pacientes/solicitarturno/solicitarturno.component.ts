@@ -148,55 +148,62 @@ export class SolicitarturnoComponent {
     const dia = this.fechaSeleccionada;
     const fechaFormateada = `${dia.getDate().toString().padStart(2, '0')}/${(dia.getMonth() + 1).toString().padStart(2, '0')}/${dia.getFullYear()}`;
   
-    this.turnoValido = false; // Inicializamos el valor de la validación
-  
-    // Llamamos a la función validarturno y esperamos la respuesta
-    this.validarturno(this.turnoSeleccionado, fechaFormateada);
-  
-    // Usamos setTimeout para darle tiempo a la validación asincrónica
-    setTimeout(() => {
-      if (this.turnoValido) {
+    // Llamamos a la función validarturno y esperamos su respuesta
+    this.validarturno(this.turnoSeleccionado, fechaFormateada).then((isValid: boolean) => {
+      if (isValid) {
         // Si el turno es válido, se confirma la selección
         this.turnos.sendturno(this.userService.getUser(), this.especialista.nombre, this.especialidadSeleccionada, this.turnoSeleccionado, this.especialista.email, fechaFormateada);
         this.mensajeExito = true;
         setTimeout(() => {
           this.mensajeExito = false;
-
+  
           Swal.fire({
             title: 'Éxito!',
             text: 'El turno fue solicitado.',
             icon: 'success',
             confirmButtonText: 'Aceptar'
           })
-
+  
           this.router.navigate(['/turnoPaciente']);
         }, 2000);
       } else {
-        console.log("Turno ya seleccionado");
-      }
-    }, 1000);  // Asegúrate de darle suficiente tiempo a la suscripción para que se ejecute
-  }
-
-  validarturno(horario: string, dia: string): void {
-    this.turnos.getTurnos().subscribe((data: any[]) => {
-      // Filtrar los turnos que coincidan con el horario y el día proporcionado
-      const turnoExistente = data.find((turno: any) => turno.horario === horario && turno.dia === dia);
-  
-      // Si ya existe un turno con el mismo horario y día, marcamos como no válido
-      if (turnoExistente) {
-
+        // Si el turno ya está reservado, mostramos el error
         Swal.fire({
           title: 'Error!',
           text: 'El turno ya está reservado.',
           icon: 'error',
           confirmButtonText: 'Intentar de nuevo'
-        })
-        console.log("El turno ya está reservado.");
-        this.turnoValido = false;
-      } else {
-        console.log("El turno está disponible.");
-        this.turnoValido = true;
+        });
       }
+    }).catch((error) => {
+      console.log("Error al validar el turno", error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Hubo un problema al validar el turno.',
+        icon: 'error',
+        confirmButtonText: 'Intentar de nuevo'
+      });
+    });
+  }
+
+  async validarturno(horario: string, dia: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      this.turnos.getTurnos().subscribe((data: any[]) => {
+        // Usamos un ciclo for para recorrer los turnos y detenernos cuando encontramos uno coincidente
+        for (let turno of data) {
+          if (turno.horario === horario && turno.dia === dia) {
+            console.log("El turno ya está reservado.");
+            resolve(false);  // Si encontramos un turno con el mismo horario y día, resolvemos como no válido
+            return;  // Terminamos la función, evitando seguir iterando
+          }
+        }
+  
+        // Si no encontramos coincidencias, significa que el turno está disponible
+        console.log("El turno está disponible.");
+        resolve(true);
+      }, (error) => {
+        reject(error);  // Si ocurre un error en la consulta, lo rechazamos
+      });
     });
   }
   
@@ -211,6 +218,7 @@ export class SolicitarturnoComponent {
 
   seleccionarEspecialidad(especialidad: any): void {
     this.especialidadSeleccionada = especialidad;
+    this.eleccion2 = false;
   }
 
   

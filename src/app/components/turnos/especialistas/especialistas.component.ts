@@ -28,6 +28,8 @@ export class EspecialistasComponent {
   pacienteFiltrado = "";
   doctorActual: any;
 
+  emailPaciente = "";
+
   constructor(
     private turnos: TurnosService,
     private userService: DataService,
@@ -156,7 +158,8 @@ export class EspecialistasComponent {
                   estado: turno.estado,
                   mensaje: turno.mensaje,
                   emaildoctor: turno.emailEspecialsita,
-                  comentario: turno.comentario
+                  comentario: turno.comentario,
+                  dia: turno.dia,
                 }));
   
               console.log("turnosFiltrados:", turnosFiltrados);
@@ -203,11 +206,8 @@ export class EspecialistasComponent {
   }
 
   guardarDiagnostico(turno: any, usuario: any) {
-    console.log('Diagnóstico Guardado:', turno.diagnostico);
-    console.log('Comentarios Guardados:', turno.comentarios);
-
     this.turnos.ingresarDiagnostico(turno.diagnostico, usuario)
-    this.turnos.ingresarComentario(turno.comentarios, usuario)
+    this.turnos.ingresarComentario(turno.comentario, usuario)
 
     // Aquí puedes realizar el llamado al servicio para guardar los datos en el backend
     this.cambiarEstado('diagnosticado', turno); // Cambiar estado del turno
@@ -228,19 +228,13 @@ export class EspecialistasComponent {
     this.datodinamico2 = false;
   }
 
+  nombreDinamicoUno = ""
+  datoDinamicoUno = ""
+  NombreDinamicoDos = ""
+  datoDinamicoDos = ""
+
   guardarHistoriaClinica(turno: any, usuario: any) {
-    console.log('Altura:', turno.altura);
-    console.log('Peso:', turno.peso);
-    console.log('Temperatura:', turno.temperatura);
-    console.log('Presión Arterial:', turno.presion);
-
-    console.log('Temperatura:', turno.NombredatodinamicoUno);
-    console.log('Presión Arterial:', turno.datodinamicoUno);
-
-    console.log('Temperatura:', turno.NombredatodinamicoDos);
-    console.log('Presión Arterial:', turno.datodinamicoDos);
-
-    this.turnos.sendHistoriaClinica(this.doctorActual, turno.paciente, turno.altura, turno.peso, turno.temperatura, turno.presion, turno.temperatura, turno.NombredatodinamicoUno, turno.NombredatodinamicoDos, turno.datodinamicoDos)
+    this.turnos.ingresarHistoriaClinica(turno.altura, turno.peso, turno.temperatura, turno.presion, this.nombreDinamicoUno, this.NombreDinamicoDos, this.datoDinamicoUno, this.datoDinamicoDos, usuario)
     this.cambiarEstado('historiaClinica', turno); // 
     turno.mostrarFormularioHistoriaClinica = false;
     // Llamar al servicio para guardar la historia clínica en el backend

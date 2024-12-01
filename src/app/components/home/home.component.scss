@@ -1,19 +1,123 @@
+/* Estilo general */
 body {
-    margin: 0;
-    height: 93vh;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* Banner de Bienvenida */
+.banner {
+  position: relative; /* Necesario para colocar el pseudo-elemento */
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/360_F_895018891_HPkMRmOSvHKr0irXm81T7KsoCuhUTXg9.jpg?alt=media&token=8d8d6258-a024-4f79-b570-944fd4a6ef1c");
+  color: white;
+  padding: 50px 20px;
+  text-align: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  filter: brightness(1.2); /* Oscurecer la imagen, puedes ajustar el valor */
+}
+
+.banner::before {
+  content: ''; /* Pseudo-elemento vacío */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3); /* Fondo negro semi-transparente */
+  z-index: -1; /* Coloca la sombra detrás del contenido */
+}
+
+
+.banner-content h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.banner-content p {
+  font-size: 1.2em;
+}
+
+/* Botones */
+.btn {
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-outline-primary {
+  border: 2px solid #007bff;
+  color: #007bff;
+  background-color: transparent;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+/* Sección de Servicios y Centro de Atención */
+.services-contact {
+  padding: 50px 20px;
+  background-color: white;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-header h2 {
+  font-size: 2em;
+  color: #007bff;
+}
+
+.sections {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.service, .contact {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.service h3, .contact h3 {
+  color: #007bff;
+}
+
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.card h4 {
+  margin: 0;
+  color: #007bff;
+}
+
+.card p {
+  margin: 5px 0 0;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .sections {
+      flex-direction: column;
   }
-  .background {
-    background-image: url('https://firebasestorage.googleapis.com/v0/b/tplabo4final.firebasestorage.app/o/clinicahome2.jpg?alt=media&token=0df46f9e-0b90-471f-8e36-7225420a3c86');
-    background-size: cover;
-    background-position: center;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .content {
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-  }
+}
