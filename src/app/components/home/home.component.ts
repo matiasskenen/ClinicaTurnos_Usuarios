@@ -15,6 +15,7 @@ import { DataService } from '../../services/authUsers/data.service';
 export class HomeComponent {
 
   userVerificado = false;
+  user : any;
 
   constructor(private router: Router, private auth: Auth, private service : DataService)
   {
@@ -23,10 +24,11 @@ export class HomeComponent {
   }
 
   checkUser() {
-    if(this.service.getUser() != "")
-    {
-      this.userVerificado = true;
-    }
+    this.auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.user = user.email;
+      }
+    });
   }
 
   navigateTo(route: string) {

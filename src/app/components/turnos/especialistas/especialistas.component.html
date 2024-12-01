@@ -10,7 +10,7 @@
   />
 
   <!-- Lista de Turnos Filtrados -->
-  <div *ngFor="let turno of nombresEspecialistasArray | filter: searchText: ['especialidad', 'paciente', 'comentario', 'altura', 'peso', 'presion', 'temperatura', 'usuario', 'diagnostico', 'estado']">
+  <div *ngFor="let turno of nombresEspecialistasArray | filter: searchText">
     <ul class="list-group mt-4" *ngIf="turno.emailEspecialsita == doctorActual">
       
       <li class="list-group-item">

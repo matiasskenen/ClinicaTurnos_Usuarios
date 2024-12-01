@@ -71,7 +71,7 @@ export class PacientesAtendidosComponent {
    mostrarHistoriaClinica(turno: any) {
     console.log(turno);
   
-    this.turnos.getHistoriaClinica().subscribe({
+    this.turnos.getTurno().subscribe({
       next: (data: any[]) => {
         // Filtrar todas las historias clínicas del paciente
         const historiasFiltradas = data.filter(
@@ -93,11 +93,22 @@ export class PacientesAtendidosComponent {
                     'doctor',
                     'paciente',
                     'observaciones',
+                    'especialista',
+                    'diagnostico',
+                    'horario',
+                    'comentario',
+                    'emailEspecialsita',
+                    'especialidad',
+                    'dia',
+                    'estado',
+                    'mensaje',
+
                   ].includes(key)
               )
               .map(([titulo, valor]) => ({ titulo, valor })); // Extraer los datos dinámicos
   
             return {
+              dia: historia.dia,
               altura: historia.altura,
               peso: historia.peso,
               presion: historia.presion,

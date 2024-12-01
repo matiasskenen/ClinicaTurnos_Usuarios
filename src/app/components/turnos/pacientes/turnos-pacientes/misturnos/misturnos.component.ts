@@ -4,16 +4,18 @@ import { DataService } from '../../../../../services/authUsers/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
+import { FilterPipe } from '../../../../pipes/filter.pipe';
 
 @Component({
   selector: 'app-misturnos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FilterPipe],
   templateUrl: './misturnos.component.html',
   styleUrl: './misturnos.component.scss',
 })
 export class MisturnosComponent {
   // Variables
+  searchText: string = '';
   nombresEspecialistasArray: any[] = [];
   nombresFiltrados: any[] = []; // Inicialización como array vacío
   especialidadSeleccionada: string = '';
@@ -21,6 +23,8 @@ export class MisturnosComponent {
   turnosDisponibles: string[] = [];
   turnoSeleccionado: string = '';
   mensajeExito: boolean = false; // Para mostrar el mensaje de éxito
+  usuarioActual : any;
+
 
   constructor(
     private turnos: TurnosService,
@@ -34,14 +38,14 @@ export class MisturnosComponent {
   dataNombres() {
     // Obtener el usuario actual
     this.auth.onAuthStateChanged((user) => {
-      let usuarioActual = user?.email;
+      this.usuarioActual = user?.email;
 
       // Llamada al servicio para obtener los turnos
       this.turnos.getTurnos().subscribe({
         next: (data: any[]) => {
           // Filtrar los turnos donde el paciente es el usuario actual
           this.nombresEspecialistasArray = data
-            .filter((turno: any) => turno.paciente === usuarioActual) // Filtra por el paciente
+            .filter((turno: any) => turno.paciente === this.usuarioActual) // Filtra por el paciente
             .map((turno: any) => ({
               paciente: turno.paciente,
               especialista: turno.especialista,
@@ -49,6 +53,7 @@ export class MisturnosComponent {
               horario: turno.horario,
               estado: turno.estado,
               mensaje: turno.mensaje
+
             }));
 
           // Actualizar los turnos filtrados para la visualización

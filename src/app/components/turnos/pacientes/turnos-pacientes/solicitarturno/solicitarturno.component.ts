@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../../../../services/authUsers/data.service';
 import { FiltrarTurnosPipe } from '../../../../filtrar-turnos.pipe';
+import { Auth } from '@angular/fire/auth';
 @Component({
   selector: 'app-solicitarturno',
   standalone: true,
@@ -34,7 +35,18 @@ export class SolicitarturnoComponent {
   especialistasEmail = "";
   fechaMaxima: Date = new Date();
   
-  constructor(private turnos: TurnosService, private userService: DataService, private router : Router) {}
+  constructor(private turnos: TurnosService, private userService: DataService, private router : Router, private auth : Auth) 
+  {
+    this.auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.user = user.email;
+      }
+    });
+  }
+
+  user : any;
+
+
 
   obtenerTurnosDisponibles() {
     if (this.especialidadSeleccionada && this.fechaSeleccionada) {
@@ -69,6 +81,7 @@ export class SolicitarturnoComponent {
     this.turnos.getEspecialistas().subscribe((data: any[]) => {
       this.nombresEspecialistasArray = data.map((especialista: any) => ({
         nombre: especialista.nombre,
+        apellido: especialista.apellido,
         horario: especialista.horario,
         email : especialista.email,
         imagen : especialista.imagen,
@@ -152,7 +165,7 @@ export class SolicitarturnoComponent {
     this.validarturno(this.turnoSeleccionado, fechaFormateada).then((isValid: boolean) => {
       if (isValid) {
         // Si el turno es válido, se confirma la selección
-        this.turnos.sendturno(this.userService.getUser(), this.especialista.nombre, this.especialidadSeleccionada, this.turnoSeleccionado, this.especialista.email, fechaFormateada);
+        this.turnos.sendturno(this.user, this.especialista.nombre + " " + this.especialista.apellido, this.especialidadSeleccionada, this.turnoSeleccionado, this.especialista.email, fechaFormateada);
         this.mensajeExito = true;
         setTimeout(() => {
           this.mensajeExito = false;
@@ -207,6 +220,11 @@ export class SolicitarturnoComponent {
     });
   }
   
+  sumarDias(fecha: Date, dias: number): Date {
+    const nuevaFecha = new Date(fecha);
+    nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+    return nuevaFecha;
+  }
 
   volverhome() {
     this.router.navigate(['/turnoPaciente']);

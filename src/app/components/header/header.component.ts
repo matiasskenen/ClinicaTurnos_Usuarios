@@ -29,20 +29,17 @@ export class HeaderComponent {
   }
 
   checkUser(): void {
-        this.auth.onAuthStateChanged((user) => {
-          if (user) {
-            this.user = user.email;
-            console.log('Usuario detectado:', user);
-            console.log('Usuario verificado. Permitir acceso.');
-            // Verificar el perfil solo después de que el usuario esté disponible
-            this.checkPerfil('especialistas');
-            this.checkPerfil('admins');
-            this.checkPerfil('pacientes');
-          } else {
-            console.log('Usuario no verificado. Cerrando sesión...');
-            this.auth.signOut();
-          }
-        });
+    this.auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.user = user.email;
+        console.log('Usuario detectado:', user);
+        console.log('Usuario verificado. Permitir acceso.');
+        // Verificar el perfil solo después de que el usuario esté disponible
+        this.checkPerfil('especialistas');
+        this.checkPerfil('admins');
+        this.checkPerfil('pacientes');
+      }
+    });
   }
 
 

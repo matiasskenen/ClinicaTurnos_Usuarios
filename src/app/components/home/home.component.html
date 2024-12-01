@@ -7,7 +7,7 @@
         Nos complace ofrecerte atención médica de calidad con un equipo altamente capacitado. ¡Estamos aquí para cuidar de ti y tu familia!
       </p>
 
-      <div class="d-flex justify-content-center gap-3" *ngIf="userVerificado == false">
+      <div class="d-flex justify-content-center gap-3" *ngIf="!user">
         <label (click)="navigateTo('login')" class="btn btn-primary btn-lg px-4">Iniciar Sesión</label>
         <label (click)="navigateTo('register')" class="btn btn-outline-primary btn-lg px-4">Registrarse</label>
       </div>

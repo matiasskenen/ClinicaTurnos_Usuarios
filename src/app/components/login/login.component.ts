@@ -101,7 +101,7 @@ export class LoginComponent {
                       icon: 'success',
                       confirmButtonText: 'Aceptar'
                     })
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/perfilEspecialista']);
                     this.userService.setUserVerificado(true);
                   
                   }
