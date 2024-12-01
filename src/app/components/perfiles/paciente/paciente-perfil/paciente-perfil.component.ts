@@ -88,16 +88,28 @@ export class PacientePerfilComponent {
                     'doctor',
                     'paciente',
                     'observaciones',
+                    'dia',
+                    'especialidad',
+                    'especialista',
+                    'comentario',
+                    'emailEspecialsita',
+                    'especialidad',
+                    'comentarioPaciente',
+                    'mensaje',
+                    'estado',
+                    'diagnostico',
+                    'horario',
                   ].includes(key)
               )
               .map(([titulo, valor]) => ({ titulo, valor }));
             return {
+              paciente : historia.paciente,
               altura: historia.altura,
               peso: historia.peso,
               presion: historia.presion,
               temperatura: historia.temperatura,
-              fecha: historia.fecha,
-              doctor: historia.doctor,
+              fecha: historia.dia,
+              emailEspecialsita: historia.emailEspecialsita,
               observaciones: historia.observaciones || 'Sin observaciones',
               datosDinamicos,
             };

@@ -34,6 +34,44 @@ export class MisturnosComponent {
     this.dataNombres();
   }
 
+  ingresarEncuesta(atencion: string, demora: string, limpieza : string, usuario : string, doctor : string, turno: any)
+  {
+    console.log(doctor)
+    this.turnos.ingresarEncuestaPaciente(atencion, demora, limpieza, usuario, doctor);
+    this.ocultarFormularioEncuesta(turno);
+    this.cambiarEstado("FINALIZADO", turno);
+  }
+
+  ingresarCalificacion(comentario : string, usuario : string)
+  {
+    this.turnos.ingresarComentarioPaciente(comentario, usuario)
+  }
+
+  ocultarFormularioEncuesta(turno: any) {
+    turno.mostrarFormularioEncuesta = false;
+  }
+
+  ocultarFormularioCalificar(turno: any) {
+    turno.mostrarFormularioCalificar = false;
+  }
+
+  mostrarFormularioEncuesta(turno: any) {
+    // Mostrar el formulario solo para el turno seleccionado
+    this.nombresEspecialistasArray.forEach((t) => {
+      t.mostrarFormularioEncuesta = false;
+    });
+    turno.mostrarFormularioEncuesta = true;
+  }
+
+  
+  mostrarFormularioCalificar(turno: any) {
+    // Mostrar el formulario solo para el turno seleccionado
+    this.nombresEspecialistasArray.forEach((t) => {
+      t.mostrarFormularioCalificar = false;
+    });
+    turno.mostrarFormularioCalificar = true;
+  }
+
   // Función para obtener los turnos del usuario
   dataNombres() {
     // Obtener el usuario actual
@@ -52,7 +90,8 @@ export class MisturnosComponent {
               especialidad: turno.especialidad,
               horario: turno.horario,
               estado: turno.estado,
-              mensaje: turno.mensaje
+              mensaje: turno.mensaje,
+              doctor : turno.emailEspecialsita
 
             }));
 

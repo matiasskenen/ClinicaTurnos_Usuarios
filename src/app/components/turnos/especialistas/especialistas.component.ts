@@ -160,6 +160,7 @@ export class EspecialistasComponent {
                   emaildoctor: turno.emailEspecialsita,
                   comentario: turno.comentario,
                   dia: turno.dia,
+                  comentarioPaciente : turno.comentarioPaciente,
                 }));
   
               console.log("turnosFiltrados:", turnosFiltrados);
@@ -206,8 +207,8 @@ export class EspecialistasComponent {
   }
 
   guardarDiagnostico(turno: any, usuario: any) {
-    this.turnos.ingresarDiagnostico(turno.diagnostico, usuario)
-    this.turnos.ingresarComentario(turno.comentario, usuario)
+    this.turnos.ingresarDiagnostico(turno.diagnostico, usuario, turno.horario)
+    this.turnos.ingresarComentario(turno.comentario, usuario, turno.horario)
 
     // Aquí puedes realizar el llamado al servicio para guardar los datos en el backend
     this.cambiarEstado('diagnosticado', turno); // Cambiar estado del turno
@@ -234,7 +235,7 @@ export class EspecialistasComponent {
   datoDinamicoDos = ""
 
   guardarHistoriaClinica(turno: any, usuario: any) {
-    this.turnos.ingresarHistoriaClinica(turno.altura, turno.peso, turno.temperatura, turno.presion, this.nombreDinamicoUno, this.NombreDinamicoDos, this.datoDinamicoUno, this.datoDinamicoDos, usuario)
+    this.turnos.ingresarHistoriaClinica(turno.altura, turno.peso, turno.temperatura, turno.presion, this.nombreDinamicoUno, this.NombreDinamicoDos, this.datoDinamicoUno, this.datoDinamicoDos, usuario, turno.horario)
     this.cambiarEstado('historiaClinica', turno); // 
     turno.mostrarFormularioHistoriaClinica = false;
     // Llamar al servicio para guardar la historia clínica en el backend
@@ -259,6 +260,18 @@ export class EspecialistasComponent {
       t.mostrarFormularioDiagnostico = false;
     });
     turno.mostrarFormularioDiagnostico = true;
+  }
+
+  ocultarverComentarioPaciente(turno: any) {
+    turno.verComentarioPaciente = false;
+  }
+
+  verComentarioPaciente(turno: any) {
+    // Mostrar el formulario solo para el turno seleccionado
+    this.nombresEspecialistasArray.forEach((t) => {
+      t.verComentarioPaciente = false;
+    });
+    turno.verComentarioPaciente = true;
   }
 
   // Código de envío

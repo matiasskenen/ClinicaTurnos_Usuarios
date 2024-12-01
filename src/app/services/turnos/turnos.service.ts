@@ -87,6 +87,9 @@ export class TurnosService {
       dia: dia,
       altura: "",
       peso: "",
+      comentarioPaciente : "",
+      presion : "",
+      temperatura: ""
     };
 
 
@@ -133,7 +136,7 @@ export class TurnosService {
 
 
   getHistoriaClinica(): Observable<any[]> {
-    const col = collection(this.firestore, "historiaClinica");
+    const col = collection(this.firestore, "turnos");
 
     const filteredQuery = query(
       col
@@ -228,7 +231,87 @@ export class TurnosService {
     });
   }
 
-  ingresarDiagnostico(mensaje: string, paciente: string) {
+  ingresarDiagnostico(mensaje: string, paciente: string, horario: string) {
+    // Crear una referencia a la colección
+    const coleccionRef = collection(this.firestore, "turnos");
+
+    // Crear una consulta que busque los documentos donde el paciente y el horario coinciden
+    const consulta = query(
+      coleccionRef,
+      where("paciente", "==", paciente),
+      where("horario", "==", horario) // Validamos también el horario
+    );
+
+    // Obtener los documentos que coinciden con la consulta
+    getDocs(consulta).then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        // Si se encuentra al menos un documento, tomamos el primero
+        const docSnap = querySnapshot.docs[0]; // Aquí obtenemos el primer documento
+        const idTurno = docSnap.id; // Obtenemos el id del documento encontrado
+
+        // Ahora puedes actualizar el campo 'estado' de este documento
+        const turnoRef = doc(this.firestore, "turnos", idTurno);
+
+        // Actualizamos el estado
+        updateDoc(turnoRef, {
+          diagnostico: mensaje // Actualizamos el estado con el nuevo valor
+        })
+          .then(() => {
+            console.log('Estado actualizado con éxito');
+          })
+          .catch((error) => {
+            console.error('Error al actualizar el estado:', error);
+          });
+
+      } else {
+        console.log("No se encontró el turno con el paciente y horario especificados.");
+      }
+    }).catch((error) => {
+      console.error("Error al realizar la consulta:", error);
+    });
+  }
+
+  ingresarComentario(mensaje: string, paciente: string, horario: string) {
+    // Crear una referencia a la colección
+    const coleccionRef = collection(this.firestore, "turnos");
+
+    // Crear una consulta que busque los documentos donde el paciente y el horario coinciden
+    const consulta = query(
+      coleccionRef,
+      where("paciente", "==", paciente),
+      where("horario", "==", horario) // Validamos también el horario
+    );
+
+    // Obtener los documentos que coinciden con la consulta
+    getDocs(consulta).then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        // Si se encuentra al menos un documento, tomamos el primero
+        const docSnap = querySnapshot.docs[0]; // Aquí obtenemos el primer documento
+        const idTurno = docSnap.id; // Obtenemos el id del documento encontrado
+
+        // Ahora puedes actualizar el campo 'estado' de este documento
+        const turnoRef = doc(this.firestore, "turnos", idTurno);
+
+        // Actualizamos el estado
+        updateDoc(turnoRef, {
+          comentario: mensaje // Actualizamos el estado con el nuevo valor
+        })
+          .then(() => {
+            console.log('Estado actualizado con éxito');
+          })
+          .catch((error) => {
+            console.error('Error al actualizar el estado:', error);
+          });
+
+      } else {
+        console.log("No se encontró el turno con el paciente y horario especificados.");
+      }
+    }).catch((error) => {
+      console.error("Error al realizar la consulta:", error);
+    });
+  }
+
+  ingresarComentarioPaciente(mensaje: string, paciente: string) {
     // Suponiendo que deseas buscar por email
     const nombreBuscado = paciente; // Cambia esto con el email que buscas
 
@@ -249,7 +332,7 @@ export class TurnosService {
         const especialistaRef = doc(this.firestore, "turnos", idEspecialista);
 
         updateDoc(especialistaRef, {
-          diagnostico: mensaje // Cambia esto con el nuevo nombre que deseas asignar
+          comentarioPaciente: mensaje // Cambia esto con el nuevo nombre que deseas asignar
         })
 
       } else {
@@ -260,37 +343,30 @@ export class TurnosService {
     });
   }
 
-  ingresarComentario(mensaje: string, paciente: string) {
-    // Suponiendo que deseas buscar por email
-    const nombreBuscado = paciente; // Cambia esto con el email que buscas
+  ingresarEncuestaPaciente(atencion: string, demora: string, limpieza: string, usuario: string, doctor : string) {
+    let col = collection(this.firestore, "encuestas");
 
-    // Crear una referencia a la colección
-    const coleccionRef = collection(this.firestore, "turnos");
+    let obj = {
+      atencion: atencion,
+      demora : demora,
+      limpieza : limpieza,
+      usuario : usuario,
+      doctor : doctor
+    };
 
-    // Crear una consulta que busque el documento donde el email coincide
-    const consulta = query(coleccionRef, where("paciente", "==", nombreBuscado));
 
-    // Obtener los documentos que coinciden con la consulta
-    getDocs(consulta).then((querySnapshot) => {
-      if (!querySnapshot.empty) {
-        // Si se encuentra al menos un documento, tomamos el primero
-        const docSnap = querySnapshot.docs[0]; // Aquí obtenemos el primer documento
-        const idEspecialista = docSnap.id; // Obtenemos el id del documento encontrado
 
-        // Ahora puedes actualizar el campo 'nombre' de este documento
-        const especialistaRef = doc(this.firestore, "turnos", idEspecialista);
+    addDoc(col, obj)
+      .then(() => {
+        console.log('Encuesta agregad con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al agregar turno: ', error);
+      });
 
-        updateDoc(especialistaRef, {
-          comentario: mensaje // Cambia esto con el nuevo nombre que deseas asignar
-        })
-
-      } else {
-        console.log("No se encontró el turno con ese email.");
-      }
-    }).catch((error) => {
-      console.error("Error al realizar la consulta:", error);
-    });
   }
+
+  
 
   getImagenesEspecialdiad(): Observable<any[]> {
     const col = collection(this.firestore, "imagenesEspecialidad");
@@ -311,13 +387,19 @@ export class TurnosService {
     NombredatodinamicoDos: string,
     datodinamicoUno: string,
     datodinamicoDos: string,
-    emailPaciente: string
+    emailPaciente: string,
+    horario : string
   ) {
     // Crear una referencia a la colección "turnos"
     const coleccionRef = collection(this.firestore, "turnos");
 
     // Crear una consulta para buscar el documento del paciente
-    const consulta = query(coleccionRef, where("paciente", "==", emailPaciente));
+    const consulta = query(
+      coleccionRef,
+      where("paciente", "==", emailPaciente),
+      where("horario", "==", horario) // Validamos también el horario
+    );
+
 
     // Ejecutar la consulta
     getDocs(consulta)

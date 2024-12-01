@@ -102,6 +102,7 @@ export class PacientesAtendidosComponent {
                     'dia',
                     'estado',
                     'mensaje',
+                    'comentarioPaciente'
 
                   ].includes(key)
               )

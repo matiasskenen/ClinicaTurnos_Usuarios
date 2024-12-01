@@ -205,8 +205,8 @@ guardarDiagnostico(turno: any, usuario: any) {
   console.log('Diagnóstico Guardado:', turno.diagnostico);
   console.log('Comentarios Guardados:', turno.comentarios);
 
-  this.turnos.ingresarDiagnostico(turno.diagnostico, usuario)
-  this.turnos.ingresarComentario(turno.comentarios, usuario)
+  this.turnos.ingresarDiagnostico(turno.diagnostico, usuario, turno.horario)
+  this.turnos.ingresarComentario(turno.comentarios, usuario, turno.horario)
 
   // Aquí puedes realizar el llamado al servicio para guardar los datos en el backend
   this.cambiarEstado('diagnosticado', turno); // Cambiar estado del turno
