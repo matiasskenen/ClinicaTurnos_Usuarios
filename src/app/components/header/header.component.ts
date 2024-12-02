@@ -107,6 +107,7 @@ export class HeaderComponent {
       case 'perfilAdmin': this.router.navigate(['/perfilAdmin']); break;
       case 'seccionusuarios': this.router.navigate(['/seccionusuarios']); break;
       case 'pacientesAtendidos': this.router.navigate(['/pacientesAtendidos']); break;
+      case 'estadisticas': this.router.navigate(['/estadisticas']); break;
       default: console.log('Ruta no encontrada'); break;
     }
   }

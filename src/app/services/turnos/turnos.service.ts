@@ -17,6 +17,195 @@ export class TurnosService {
 
   constructor(private firestore: Firestore, private auth: Auth) { }
 
+  sendLogTurnoFinalizado(medico : string) {
+    let col = collection(this.firestore, "turnoFinalizado");
+  
+    // Crear una instancia de la fecha y hora actual
+    const now = new Date();
+  
+    // Obtener el día en formato "YYYY-MM-DD"
+    const dia = now.toISOString().split('T')[0];
+  
+    // Obtener el horario en formato "HH:MM:SS"
+    const horario = now.toTimeString().split(' ')[0];
+  
+    let obj = {
+      medico : medico,
+      dia: dia,
+      horario: horario,
+    };
+  
+    addDoc(col, obj)
+      .then(() => {
+        console.log('Log de ingreso agregado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al agregar log de ingreso: ', error);
+      });
+  }
+
+    
+  getLogTurnoFinalizado(): Observable<any[]> {
+    const col = collection(this.firestore, "turnoFinalizado");
+
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
+  sendlogTurnoMedico(medico : string) {
+    let col = collection(this.firestore, "turnoPormedicos");
+  
+    // Crear una instancia de la fecha y hora actual
+    const now = new Date();
+  
+    // Obtener el día en formato "YYYY-MM-DD"
+    const dia = now.toISOString().split('T')[0];
+  
+    // Obtener el horario en formato "HH:MM:SS"
+    const horario = now.toTimeString().split(' ')[0];
+  
+    let obj = {
+      medico : medico,
+      dia: dia,
+      horario: horario,
+    };
+  
+    addDoc(col, obj)
+      .then(() => {
+        console.log('Log de ingreso agregado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al agregar log de ingreso: ', error);
+      });
+  }
+
+    
+  getLogTurnoMedico(): Observable<any[]> {
+    const col = collection(this.firestore, "turnoPormedicos");
+
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
+  sendLogTurnosPorDia() {
+    let col = collection(this.firestore, "turnoPorDia");
+  
+    // Crear una instancia de la fecha y hora actual
+    const now = new Date();
+  
+    // Obtener el día en formato "YYYY-MM-DD"
+    const dia = now.toISOString().split('T')[0];
+  
+    // Obtener el horario en formato "HH:MM:SS"
+    const horario = now.toTimeString().split(' ')[0];
+  
+    let obj = {
+      dia: dia,
+      horario: horario,
+    };
+  
+    addDoc(col, obj)
+      .then(() => {
+        console.log('Log de ingreso agregado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al agregar log de ingreso: ', error);
+      });
+  }
+
+    
+  getLogTurnoPorDia(): Observable<any[]> {
+    const col = collection(this.firestore, "turnoPorDia");
+
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
+  sendLogEspecialidad(especialidad: string) {
+    let col = collection(this.firestore, "especialidadTurno");
+  
+    // Crear una instancia de la fecha y hora actual
+    const now = new Date();
+  
+    // Obtener el día en formato "YYYY-MM-DD"
+    const dia = now.toISOString().split('T')[0];
+  
+    // Obtener el horario en formato "HH:MM:SS"
+    const horario = now.toTimeString().split(' ')[0];
+  
+    let obj = {
+      especialidad: especialidad,
+      dia: dia,
+      horario: horario,
+    };
+  
+    addDoc(col, obj)
+      .then(() => {
+        console.log('Log de ingreso agregado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al agregar log de ingreso: ', error);
+      });
+  }
+
+    
+  getLogEspecialidad(): Observable<any[]> {
+    const col = collection(this.firestore, "especialidadTurno");
+
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
+
+  sendLogLogin(usuario: string) {
+    let col = collection(this.firestore, "loginLogs");
+  
+    // Crear una instancia de la fecha y hora actual
+    const now = new Date();
+  
+    // Obtener el día en formato "YYYY-MM-DD"
+    const dia = now.toISOString().split('T')[0];
+  
+    // Obtener el horario en formato "HH:MM:SS"
+    const horario = now.toTimeString().split(' ')[0];
+  
+    let obj = {
+      usuario: usuario,
+      dia: dia,
+      horario: horario,
+    };
+  
+    addDoc(col, obj)
+      .then(() => {
+        console.log('Log de ingreso agregado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al agregar log de ingreso: ', error);
+      });
+  }
+  
+  getLogsLogin(): Observable<any[]> {
+    const col = collection(this.firestore, "loginLogs");
+
+    const filteredQuery = query(
+      col
+    );
+
+    return collectionData(filteredQuery); // Retorna el observable
+  }
+
   getUsuarios(): Observable<any[]> {
     const col = collection(this.firestore, "pacientes");
 

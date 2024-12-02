@@ -28,7 +28,14 @@
             </ul>
 
             <div class="text-center mt-4">
-              <button class="btn-download" (click)="ddescargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
+              <label for="especialidad">Seleccionar Especialidad:</label>
+              <select id="especialidad" [(ngModel)]="especialidadSelecc" class="form-control">
+                <option value="Cardiología">Cardiología</option>
+                <option value="Dermatología">Dermatología</option>
+                <option value="Pediatría">Pediatría</option>
+              </select>
+
+              <button class="btn-download mt-4" (click)="ddescargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
             </div>
           </div>
         </div>

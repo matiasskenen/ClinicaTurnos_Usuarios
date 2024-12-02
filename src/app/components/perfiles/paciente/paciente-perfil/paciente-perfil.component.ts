@@ -112,6 +112,8 @@ export class PacientePerfilComponent {
               emailEspecialsita: historia.emailEspecialsita,
               observaciones: historia.observaciones || 'Sin observaciones',
               datosDinamicos,
+              especialidad: historia.especialidad,
+
             };
           });
         } else {
@@ -126,7 +128,14 @@ export class PacientePerfilComponent {
     });
   }
 
+  
+  selectedPaciente: string | null = null;
+  
+  especialidadSelecc: string = '';
+
   ddescargarHistoriaClinica() {
+
+
     const doc = new jsPDF();
     doc.setFontSize(20);
     doc.setTextColor(0, 102, 204);
@@ -140,7 +149,7 @@ export class PacientePerfilComponent {
       doc.setTextColor(0, 0, 0);
       doc.text(`Fecha: ${historia.fecha}`, 20, yPosition);
       yPosition += 10;
-      doc.text(`Doctor: ${historia.doctor}`, 20, yPosition);
+      doc.text(`Doctor: ${historia.emailEspecialsita}`, 20, yPosition);
       yPosition += 10;
       doc.text(`Peso: ${historia.peso} kg`, 20, yPosition);
       yPosition += 10;
@@ -163,4 +172,9 @@ export class PacientePerfilComponent {
     });
     doc.save('historias_clinicas_' + this.pacienteActual + '.pdf');
   }
+
+  
+
+
+
 }

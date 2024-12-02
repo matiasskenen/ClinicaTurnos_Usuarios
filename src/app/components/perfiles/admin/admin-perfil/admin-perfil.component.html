@@ -1,7 +1,15 @@
 <div class="container mt-5">
     <!-- Mi Perfil -->
     <h2 class="text-center mb-4">Mi Perfil</h2>
-  
+
+    <div>
+      <h2>Panel de Administración</h2>
+      <button (click)="toggleCaptcha()">
+        {{ captchaEnabled ? 'Deshabilitar CAPTCHA' : 'Habilitar CAPTCHA' }}
+      </button>
+      <p>Estado del CAPTCHA: {{ captchaEnabled ? 'Habilitado' : 'Deshabilitado' }}</p>
+    </div>
+
     <div *ngFor="let turno of nombresEspecialistasArray">
       <ng-container *ngIf="turno.email == pacienteActual">
         <div class="text-center">

@@ -20,6 +20,7 @@ import { map } from 'rxjs/operators';
 import { signOut, User } from 'firebase/auth';
 import { TurnosService } from '../../services/turnos/turnos.service';
 import { NgxCaptchaModule } from 'ngx-captcha';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +28,15 @@ import { NgxCaptchaModule } from 'ngx-captcha';
   imports: [CommonModule, FormsModule, NgxCaptchaModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  animations: [
+    trigger('routeAnimations', [
+      transition('HomePage => LoginPage', [
+        style({ opacity: 0 }),
+        animate('300ms', style({ opacity: 1 }))
+      ]),
+      // Agregar más transiciones según las necesidades
+    ])
+  ]
 })
 export class LoginComponent {
   email: string = '';
@@ -83,7 +93,8 @@ export class LoginComponent {
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
               })
-              this.router.navigate(['/perfilPaciente']);
+              this.router.navigate(['/home']);
+              this.turnos.sendLogLogin(this.email)
             } else {
 
               console.log(res.user.emailVerified)
@@ -102,6 +113,7 @@ export class LoginComponent {
                       confirmButtonText: 'Aceptar'
                     })
                     this.router.navigate(['/perfilEspecialista']);
+                    this.turnos.sendLogLogin(this.email)
                     this.userService.setUserVerificado(true);
                   
                   }

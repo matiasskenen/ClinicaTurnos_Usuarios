@@ -5,6 +5,8 @@ import { TurnosService } from '../../../../services/turnos/turnos.service';
 import { DataService } from '../../../../services/authUsers/data.service';
 import { Auth } from '@angular/fire/auth';
 import { jsPDF } from 'jspdf';
+import { CaptchaService } from '../../../services/captcha.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-perfil',
@@ -30,6 +32,7 @@ export class AdminPerfilComponent {
     private turnos: TurnosService,
     private userService: DataService,
     private auth: Auth,
+    private captchaService: CaptchaService
   ) {
     this.init();
   }
@@ -37,6 +40,29 @@ export class AdminPerfilComponent {
   async init() {
     await this.dataNombres();
     this.mostrarHistoriaClinica();
+  }
+
+  captchaEnabled: boolean = true;
+  captchaSubscription: any;
+
+  ngOnInit() {
+    // Subscribirse al estado del captcha
+    this.captchaSubscription = this.captchaService.captchaEnabled$.subscribe((enabled: boolean) => {
+      this.captchaEnabled = enabled;
+    });
+  }
+
+  ngOnDestroy() {
+    // Desuscribirse para evitar fugas de memoria
+    if (this.captchaSubscription) {
+      this.captchaSubscription.unsubscribe();
+    }
+  }
+
+  toggleCaptcha() {
+    console.log("Cambiando estado del captcha");
+    this.captchaService.toggleCaptcha(); // Cambia el estado del captcha
+    console.log("Captcha habilitado: ", this.captchaEnabled);
   }
 
   async dataNombres() {

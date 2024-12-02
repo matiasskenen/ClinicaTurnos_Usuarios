@@ -1,0 +1,36 @@
+<section class="estadisticas-container">
+    <h2>Estadísticas de Turnos</h2>
+
+    <button (click)="downloadPDF()">Descargar PDF</button>
+
+    <!-- Logs de Usuarios -->
+    <div class="logs-section">
+        <h3>Logs de Usuarios</h3>
+        <pre>{{ logsUsuarios.join('\n') }}</pre>
+    </div>
+    <!-- Gráfico de Turnos por Día -->
+    <div class="chart-wrapper">
+      <h3>Turnos por Día</h3>
+      <p-chart type="line" [data]="chartDataTurnos" [options]="chartOptions"></p-chart>
+    </div>
+
+    <!-- Gráfico de Especialidades -->
+    <div class="chart-wrapper">
+      <h3>Turnos por Especialidad</h3>
+      <p-chart type="pie" [data]="chartDataEspecialidad" [options]="chartOptions"></p-chart>
+    </div>
+
+    <!-- Gráfico de Turnos por Médico -->
+<div class="chart-wrapper">
+    <h3>Turnos por Médico</h3>
+    <p-chart type="bar" [data]="chartDataMedicos" [options]="chartOptions"></p-chart>
+  </div>
+
+      <!-- Gráfico de Turnos por Médico -->
+<div class="chart-wrapper">
+    <h3>Turnos Finalizado por Medicos</h3>
+    <p-chart type="bar" [data]="chartDataTurnosFinalizados" [options]="chartOptions"></p-chart>
+  </div>
+  
+
+</section>

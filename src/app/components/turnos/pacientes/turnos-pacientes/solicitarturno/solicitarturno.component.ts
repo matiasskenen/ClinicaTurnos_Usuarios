@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import Swal from 'sweetalert2';
 import { TurnosService } from '../../../../../services/turnos/turnos.service';
 import { Router } from '@angular/router';
@@ -7,10 +7,17 @@ import { FormsModule } from '@angular/forms';
 import { DataService } from '../../../../../services/authUsers/data.service';
 import { FiltrarTurnosPipe } from '../../../../filtrar-turnos.pipe';
 import { Auth } from '@angular/fire/auth';
+import { CaptchaDirective } from '../../../../directivas/captcha/captcha.directive';
+import { CaptchaService } from '../../../../services/captcha.service';
+import { Input } from '@angular/core';
+import { ScrollDirective } from '../../../../directivas/scroll/scroll.directive';
+import { AgrandarbtnDirective } from '../../../../directivas/agrandarbtn/agrandarbtn.directive';
+
+
 @Component({
   selector: 'app-solicitarturno',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CaptchaDirective, ScrollDirective],
   templateUrl: './solicitarturno.component.html',
   styleUrls: ['./solicitarturno.component.scss']
 })
@@ -25,7 +32,6 @@ export class SolicitarturnoComponent {
   turnosDisponibles: string[] = [];
   turnoSeleccionado: string = '';
   mensajeExito: boolean = false;
-
   imagenesEspecilistasArray: any[] = [];
   usuarioActual: string = ''; // Variable para almacenar el usuario actual
 
@@ -35,7 +41,7 @@ export class SolicitarturnoComponent {
   especialistasEmail = "";
   fechaMaxima: Date = new Date();
   
-  constructor(private turnos: TurnosService, private userService: DataService, private router : Router, private auth : Auth) 
+  constructor(private turnos: TurnosService, private userService: DataService, private router : Router, private auth : Auth, private captchaService: CaptchaService) 
   {
     this.auth.onAuthStateChanged((user) => {
       if (user) {
@@ -46,6 +52,26 @@ export class SolicitarturnoComponent {
 
   user : any;
 
+
+  captchaEnabled!: boolean;
+
+  irArriba() {
+    window.scrollTo({
+      top: 0, // Ir al inicio de la página
+      behavior: 'smooth' // Desplazamiento suave
+    });
+  }
+
+  habilitado = false;
+
+  onCaptchaValidation(isValid: boolean): void {
+    if (isValid) {
+      this.habilitado = true;
+      console.log('CAPTCHA válido, puedes continuar');
+    } else {
+      console.log('CAPTCHA inválido, por favor intenta de nuevo');
+    }
+  }
 
 
   obtenerTurnosDisponibles() {
@@ -64,10 +90,19 @@ export class SolicitarturnoComponent {
     }
   }
 
+  captchaVisible = false;
+
   ngOnInit(): void {
     this.usuarioActual = this.userService.getUser(); // Obtén el usuario actual
     this.dataNombres();
     this.calcularFechaMaxima(); 
+    this.captchaService.captchaEnabled$.subscribe(
+      (enabled) => {
+        this.captchaEnabled = enabled;
+        console.log('Captcha habilitado:', this.captchaEnabled);
+        this.captchaVisible = true;
+      }
+    );
   }
 
   calcularFechaMaxima() {
@@ -140,6 +175,7 @@ export class SolicitarturnoComponent {
   }
 
   seleccionarTurno(turno: string) {
+    this.irArriba();
     // Convierte el turno seleccionado a una fecha
     const [hora, minuto] = turno.split(':');
     const fechaSeleccionada = new Date();
@@ -176,7 +212,10 @@ export class SolicitarturnoComponent {
             icon: 'success',
             confirmButtonText: 'Aceptar'
           })
-  
+          
+          this.turnos.sendlogTurnoMedico(this.especialista.nombre + " " + this.especialista.apellido)
+          this.turnos.sendLogTurnosPorDia();
+          this.turnos.sendLogEspecialidad(this.especialidadSeleccionada)
           this.router.navigate(['/turnoPaciente']);
         }, 2000);
       } else {
@@ -198,6 +237,9 @@ export class SolicitarturnoComponent {
       });
     });
   }
+
+
+
 
   async validarturno(horario: string, dia: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {

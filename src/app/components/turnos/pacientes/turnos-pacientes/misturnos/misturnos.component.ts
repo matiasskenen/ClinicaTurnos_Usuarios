@@ -4,7 +4,7 @@ import { DataService } from '../../../../../services/authUsers/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
-import { FilterPipe } from '../../../../pipes/filter.pipe';
+import { FilterPipe } from '../../../../pipes/filtroDatos/filter.pipe';
 
 @Component({
   selector: 'app-misturnos',

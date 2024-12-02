@@ -34,6 +34,9 @@
               <li class="nav-item" *ngIf="perfil === 'admin'">
                   <a class="nav-link" (click)="navigateTo('seccionusuarios')">Sección Usuarios</a>
               </li>
+              <li class="nav-item" *ngIf="perfil === 'admin'">
+                <a class="nav-link" (click)="navigateTo('estadisticas')">Estadisticas</a>
+            </li>
               <li class="nav-item" *ngIf="user">
                   <a class="nav-link" (click)="signOut()">Cerrar sesión</a>
               </li>

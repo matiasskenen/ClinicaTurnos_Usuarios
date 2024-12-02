@@ -67,71 +67,90 @@ export class PacientesAtendidosComponent {
    historiaClinicaSeleccionada: any = null; 
 
 
-
-   mostrarHistoriaClinica(turno: any) {
-    console.log(turno);
+   mostrarHistoriaClinica(emailPaciente: string) {
+    // Encontrar al paciente actual en base al email
+    const paciente = this.nombresEspecialistasArray.find(
+      (p) => p.email === emailPaciente
+    );
+  
+    if (!paciente) return;
+  
+    // Inicializar el array de fechas si no existe
+    paciente.fechadiasArray = [];
   
     this.turnos.getTurno().subscribe({
       next: (data: any[]) => {
-        // Filtrar todas las historias clínicas del paciente
+        // Filtrar las historias clínicas de este paciente
         const historiasFiltradas = data.filter(
-          (historia: any) => historia.paciente === turno
+          (historia: any) => historia.paciente === emailPaciente
         );
   
-        // Si se encuentran historias clínicas, procesarlas
+        // Procesar las fechas de las historias clínicas
         if (historiasFiltradas.length > 0) {
-          this.historiaClinicaSeleccionada = historiasFiltradas.map((historia: any) => {
-            const datosDinamicos = Object.entries(historia)
-              .filter(
-                ([key]) =>
-                  ![
-                    'altura',
-                    'peso',
-                    'presion',
-                    'temperatura',
-                    'fecha',
-                    'doctor',
-                    'paciente',
-                    'observaciones',
-                    'especialista',
-                    'diagnostico',
-                    'horario',
-                    'comentario',
-                    'emailEspecialsita',
-                    'especialidad',
-                    'dia',
-                    'estado',
-                    'mensaje',
-                    'comentarioPaciente'
-
-                  ].includes(key)
-              )
-              .map(([titulo, valor]) => ({ titulo, valor })); // Extraer los datos dinámicos
-  
-            return {
-              dia: historia.dia,
-              altura: historia.altura,
-              peso: historia.peso,
-              presion: historia.presion,
-              temperatura: historia.temperatura,
-              fecha: historia.fecha,
-              doctor: historia.doctor,
-              observaciones: historia.observaciones || 'Sin observaciones',
-              datosDinamicos, // Datos dinámicos
-            };
+          historiasFiltradas.forEach((historia: any) => {
+            if (paciente.fechadiasArray.length < 3) {
+              paciente.fechadiasArray.push(historia.dia);
+            }
           });
+  
+          // Mapear las historias clínicas para datos adicionales
+          this.historiaClinicaSeleccionada = historiasFiltradas.map(
+            (historia: any) => {
+              const datosDinamicos = Object.entries(historia)
+                .filter(
+                  ([key]) =>
+                    ![
+                      'altura',
+                      'peso',
+                      'presion',
+                      'temperatura',
+                      'fecha',
+                      'doctor',
+                      'paciente',
+                      'observaciones',
+                      'especialista',
+                      'diagnostico',
+                      'horario',
+                      'comentario',
+                      'emailEspecialsita',
+                      'especialidad',
+                      'dia',
+                      'estado',
+                      'mensaje',
+                      'comentarioPaciente',
+                    ].includes(key)
+                )
+                .map(([titulo, valor]) => ({ titulo, valor }));
+  
+              return {
+                dia: historia.dia,
+                altura: historia.altura,
+                peso: historia.peso,
+                presion: historia.presion,
+                temperatura: historia.temperatura,
+                fecha: historia.fecha,
+                doctor: historia.doctor,
+                observaciones: historia.observaciones || 'Sin observaciones',
+                datosDinamicos,
+              };
+            }
+          );
         } else {
-          console.log('No se encontraron historias clínicas para este paciente.');
-          this.historiaClinicaSeleccionada = []; // Limpiar si no hay resultados
+          console.log(
+            `No se encontraron historias clínicas para el paciente: ${emailPaciente}`
+          );
+          this.historiaClinicaSeleccionada = [];
         }
   
-        console.log(this.historiaClinicaSeleccionada); // Verificar el resultado
+        console.log(`Fechas de ${paciente.nombre}:`, paciente.fechadiasArray);
       },
       error: (err) => {
         console.error('Error al obtener las historias clínicas:', err);
       },
     });
   }
+  
+  
   
   
   ocultarHistoriaClinica(turno: any) {

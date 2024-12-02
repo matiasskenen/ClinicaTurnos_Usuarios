@@ -4,7 +4,7 @@ import { DataService } from '../../../services/authUsers/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
-import { FilterPipe } from '../../pipes/filter.pipe';
+import { FilterPipe } from '../../pipes/filtroDatos/filter.pipe';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -188,6 +188,11 @@ export class EspecialistasComponent {
     console.log(usuario.paciente)
     console.log(usuario.horario)
     this.turnos.ingresarEstado(estado, usuario.paciente, usuario.horario)
+
+    if(estado == "finalizar")
+    {
+      this.turnos.sendLogTurnoFinalizado(usuario.especialista)
+    }
   }
 
   cambiarMensaje(mensaje: string, usuario: any) {
@@ -227,12 +232,9 @@ export class EspecialistasComponent {
     turno.mostrarFormularioHistoriaClinica = false;
     this.datodinamico1 = false;
     this.datodinamico2 = false;
+    this.datodinamico3 = false;
   }
 
-  nombreDinamicoUno = ""
-  datoDinamicoUno = ""
-  NombreDinamicoDos = ""
-  datoDinamicoDos = ""
 
   guardarHistoriaClinica(turno: any, usuario: any) {
     this.turnos.ingresarHistoriaClinica(turno.altura, turno.peso, turno.temperatura, turno.presion, this.nombreDinamicoUno, this.NombreDinamicoDos, this.datoDinamicoUno, this.datoDinamicoDos, usuario, turno.horario)
@@ -241,9 +243,20 @@ export class EspecialistasComponent {
     // Llamar al servicio para guardar la historia clínica en el backend
   }
 
-  datodinamico1 = false;
-  datodinamico2 = false;
+  datodinamico1: boolean = false;
+  datodinamico2: boolean = false;
+  datodinamico3: boolean = false;
 
+  nombreDinamicoUno: string = '';
+  datoDinamicoUno: string = '';
+  
+  NombreDinamicoDos: string = '';
+  datoDinamicoDos: string = '';
+  
+  NombreDinamicoTres: string = '';
+  datoDinamicoTres: string = '';
+
+  // Funciones para agregar datos dinámicos
   Agregardatodinamico1() {
     this.datodinamico1 = true;
   }
@@ -251,6 +264,12 @@ export class EspecialistasComponent {
   Agregardatodinamico2() {
     this.datodinamico2 = true;
   }
+
+  Agregardatodinamico3() {
+    this.datodinamico3 = true;
+  }
+
+
 
   verdiagnostico(usuario: string) {}
 
