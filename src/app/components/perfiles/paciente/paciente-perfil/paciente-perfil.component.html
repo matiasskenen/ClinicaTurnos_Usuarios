@@ -29,13 +29,14 @@
 
             <div class="text-center mt-4">
               <label for="especialidad">Seleccionar Especialidad:</label>
-              <select id="especialidad" [(ngModel)]="especialidadSelecc" class="form-control">
+              <select id="especialidad" [(ngModel)]="especialidadElegidaUser" class="form-control">
                 <option value="Cardiología">Cardiología</option>
                 <option value="Dermatología">Dermatología</option>
                 <option value="Pediatría">Pediatría</option>
+                <option value="Todas">Todas</option>
               </select>
 
-              <button class="btn-download mt-4" (click)="ddescargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
+              <button class="btn-download mt-4" (click)="descargarHistoriaClinica()">Descargar PDF Historia Clínica</button>
             </div>
           </div>
         </div>

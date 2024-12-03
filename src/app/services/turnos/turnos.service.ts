@@ -260,7 +260,7 @@ export class TurnosService {
 
 
 
-  sendturno(paciente: string, especialista: string, especialidad: string, horario: string, email: string, dia: string) {
+  sendturno(paciente: string, especialista: string, especialidad: string, horario: string, email: string, dia: string, pacienteNombre : string) {
     let col = collection(this.firestore, "turnos");
 
     let obj = {
@@ -278,7 +278,8 @@ export class TurnosService {
       peso: "",
       comentarioPaciente : "",
       presion : "",
-      temperatura: ""
+      temperatura: "",
+      nombrePaciente : pacienteNombre
     };
 
 
@@ -532,6 +533,44 @@ export class TurnosService {
     });
   }
 
+  ingresarMensajePaciente(mensaje: string, paciente: string, horario: string) {
+    // Crear una referencia a la colección de turnos
+    const coleccionRef = collection(this.firestore, "turnos");
+
+    // Crear una consulta que busque el documento donde el paciente y el horario coinciden
+    const consulta = query(
+        coleccionRef, 
+        where("paciente", "==", paciente),  // Validar el nombre del paciente
+        where("horario", "==", horario)     // Validar el horario del turno
+    );
+
+    // Obtener los documentos que coinciden con la consulta
+    getDocs(consulta).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+            // Si se encuentra al menos un documento, tomamos el primero
+            const docSnap = querySnapshot.docs[0];  // Obtenemos el primer documento
+            const idTurno = docSnap.id; // Obtenemos el id del documento encontrado
+
+            // Ahora puedes actualizar el campo 'comentarioPaciente' de este documento
+            const turnoRef = doc(this.firestore, "turnos", idTurno);
+
+            updateDoc(turnoRef, {
+                comentarioPaciente: mensaje // Actualiza el mensaje para el paciente
+            }).then(() => {
+                console.log("Mensaje actualizado correctamente.");
+            }).catch((error) => {
+                console.error("Error al actualizar el mensaje:", error);
+            });
+
+        } else {
+            console.log("No se encontró el turno con ese paciente y horario.");
+        }
+    }).catch((error) => {
+        console.error("Error al realizar la consulta:", error);
+    });
+}
+
+
   ingresarEncuestaPaciente(atencion: string, demora: string, limpieza: string, usuario: string, doctor : string) {
     let col = collection(this.firestore, "encuestas");
 
@@ -573,9 +612,17 @@ export class TurnosService {
     temperatura: string,
     presion: string,
     NombredatodinamicoUno: string,
-    NombredatodinamicoDos: string,
     datodinamicoUno: string,
+    NombredatodinamicoDos: string,
     datodinamicoDos: string,
+    NombredatodinamicoTres: string,
+    datodinamicoTres: string,
+    NombredatodinamicoCuatro: string,
+    datodinamicoCuatro: string,
+    NombredatodinamicoCinco: string,
+    datodinamicoCinco: string,
+    NombredatodinamicoSeis: string,
+    datodinamicoSeis: string,
     emailPaciente: string,
     horario : string
   ) {
@@ -616,6 +663,22 @@ export class TurnosService {
 
           if (NombredatodinamicoDos && datodinamicoDos && datodinamicoDos !== "undefined") {
             datosActualizacion[NombredatodinamicoDos] = datodinamicoDos;
+          }
+
+          if (NombredatodinamicoTres && datodinamicoTres && datodinamicoTres !== "undefined") {
+            datosActualizacion[NombredatodinamicoTres] = datodinamicoTres;
+          }
+
+          if (NombredatodinamicoCuatro && datodinamicoCuatro && datodinamicoCuatro !== "undefined") {
+            datosActualizacion[NombredatodinamicoCuatro] = datodinamicoCuatro;
+          }
+
+          if (NombredatodinamicoCinco && datodinamicoCinco && datodinamicoCinco !== "undefined") {
+            datosActualizacion[NombredatodinamicoCinco] = datodinamicoCinco;
+          }
+
+          if (NombredatodinamicoSeis && datodinamicoSeis && datodinamicoSeis !== "undefined") {
+            datosActualizacion[NombredatodinamicoSeis] = datodinamicoSeis;
           }
 
           // Actualizar el documento en Firestore

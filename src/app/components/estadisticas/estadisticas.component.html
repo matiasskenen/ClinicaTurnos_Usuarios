@@ -1,36 +1,50 @@
-<section class="estadisticas-container">
-    <h2>Estadísticas de Turnos</h2>
+<div class="estadisticas-container">
+  <h1>Estadísticas</h1>
 
     <button (click)="downloadPDF()">Descargar PDF</button>
+    <button (click)="downloadExcel()">Descargar Excel</button>
+    <div id="logs-section">
+      <h2>Logs</h2>
+  
 
-    <!-- Logs de Usuarios -->
-    <div class="logs-section">
+      <div id="logs-usuarios" class="logs-container">
         <h3>Logs de Usuarios</h3>
-        <pre>{{ logsUsuarios.join('\n') }}</pre>
-    </div>
-    <!-- Gráfico de Turnos por Día -->
-    <div class="chart-wrapper">
-      <h3>Turnos por Día</h3>
-      <p-chart type="line" [data]="chartDataTurnos" [options]="chartOptions"></p-chart>
-    </div>
+        <ul>
+          <li *ngFor="let log of logsUsuarios">{{ log }}</li>
+        </ul>
+      </div>
+  
+  
+  </div>
+  
 
-    <!-- Gráfico de Especialidades -->
-    <div class="chart-wrapper">
+  <div id="charts-section">
+    <h2>Gráficos</h2>
+
+
+    <div id="chart-especialidad" class="chart-container">
       <h3>Turnos por Especialidad</h3>
       <p-chart type="pie" [data]="chartDataEspecialidad" [options]="chartOptions"></p-chart>
     </div>
 
-    <!-- Gráfico de Turnos por Médico -->
-<div class="chart-wrapper">
-    <h3>Turnos por Médico</h3>
-    <p-chart type="bar" [data]="chartDataMedicos" [options]="chartOptions"></p-chart>
-  </div>
 
-      <!-- Gráfico de Turnos por Médico -->
-<div class="chart-wrapper">
-    <h3>Turnos Finalizado por Medicos</h3>
-    <p-chart type="bar" [data]="chartDataTurnosFinalizados" [options]="chartOptions"></p-chart>
-  </div>
-  
 
-</section>
+    <div id="chart-turnos" class="chart-container">
+      <h3>Turnos por Día</h3>
+      <p-chart type="line" [data]="chartDataTurnos" [options]="chartOptions"></p-chart>
+    </div>
+
+
+    <div id="chart-medicos" class="chart-container">
+      <h3>Turnos por Médico</h3>
+      <p-chart type="pie" [data]="chartDataMedicos" [options]="chartOptions"></p-chart>
+    </div>
+
+
+    <div id="chart-turnos-finalizados" class="chart-container">
+      <h3>Turnos Finalizados por Médico</h3>
+      <p-chart type="bar" [data]="chartDataTurnosFinalizados" [options]="chartOptions"></p-chart>
+    </div>
+</div>
+
+

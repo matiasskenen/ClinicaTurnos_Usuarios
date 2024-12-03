@@ -6,7 +6,7 @@
 
         <div class="container d-flex justify-content-center align-items-center vh-50" *ngIf="eleccion == false">
           <div class="row text-center">
-            <!-- Botón Paciente -->
+            <!-- Botón Paciente --> 
             <div class="col-6 mb-3 d-flex justify-content-center">
               <button class="role-btn d-flex flex-column align-items-center" (click)="onRoleChange('paciente')">
                 <img
@@ -236,7 +236,7 @@
           <br />
 
           <!-- Botón Enviar -->
-          <button type="submit" class="btn btn-primary w-100" (click)="enviar()">
+          <button type="submit"  *ngIf="habilitado" class="btn btn-primary w-100" (click)="enviar()">
             Enviar
           </button>
 

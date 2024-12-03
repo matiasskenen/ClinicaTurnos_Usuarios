@@ -161,6 +161,7 @@ export class EspecialistasComponent {
                   comentario: turno.comentario,
                   dia: turno.dia,
                   comentarioPaciente : turno.comentarioPaciente,
+                  nombrePaciente : turno.nombrePaciente
                 }));
   
               console.log("turnosFiltrados:", turnosFiltrados);
@@ -237,7 +238,22 @@ export class EspecialistasComponent {
 
 
   guardarHistoriaClinica(turno: any, usuario: any) {
-    this.turnos.ingresarHistoriaClinica(turno.altura, turno.peso, turno.temperatura, turno.presion, this.nombreDinamicoUno, this.NombreDinamicoDos, this.datoDinamicoUno, this.datoDinamicoDos, usuario, turno.horario)
+    this.turnos.ingresarHistoriaClinica(turno.altura, turno.peso, turno.temperatura, turno.presion, 
+      
+      this.nombreDinamicoUno,
+      this.datoDinamicoUno,  
+      this.NombreDinamicoDos, 
+      this.datoDinamicoDos,
+      this.NombreDinamicoTres, 
+      this.datoDinamicoTres, 
+      this.NombreDinamicoCuatro, 
+      this.datoDinamicoCuatro, 
+      this.NombreDinamicoCinco, 
+      this.datoDinamicoCinco, 
+      this.NombreDinamicoSeis, 
+      this.datoDinamicoSeis,
+
+      usuario, turno.horario)
     this.cambiarEstado('historiaClinica', turno); // 
     turno.mostrarFormularioHistoriaClinica = false;
     // Llamar al servicio para guardar la historia clínica en el backend
@@ -255,6 +271,16 @@ export class EspecialistasComponent {
   
   NombreDinamicoTres: string = '';
   datoDinamicoTres: string = '';
+
+  NombreDinamicoCuatro: string = '';
+  datoDinamicoCuatro: string = '';
+
+  NombreDinamicoCinco: string = '';
+  datoDinamicoCinco: string = '';
+
+  NombreDinamicoSeis: string = '';
+  datoDinamicoSeis: string = '';
+  
 
   // Funciones para agregar datos dinámicos
   Agregardatodinamico1() {

@@ -1,5 +1,8 @@
 
-
+body {
+  height: 100vh;
+  background-color: #87CEEB; /* Celeste */
+}
 
 .role-btn {
     width: 150px;
@@ -67,6 +70,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  
 }
 
 .captcha-box {

@@ -3,9 +3,12 @@ import { ChartModule } from 'primeng/chart';
 import { TurnosService } from '../../services/turnos/turnos.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
+import * as XLSX from 'xlsx';  // Import SheetJS (xlsx)
 
 import html2canvas from 'html2canvas';
+
 
 @Component({
   selector: 'app-estadisticas',
@@ -47,7 +50,21 @@ export class EstadisticasComponent implements OnInit {
   dataUsuarios() {
     this.turnos.getLogsLogin().subscribe({
       next: (data: any[]) => {
-        this.logsUsuarios = data.map((log: any) => `Usuario: ${log.usuario}, Día: ${log.dia}, Horario: ${log.horario}`);
+        this.logsUsuarios = data
+          .map((log: any) => ({
+            usuario: log.usuario,
+            dia: log.dia,
+            horario: log.horario,
+            logString: `Usuario: ${log.usuario}, Día: ${log.dia}, Horario: ${log.horario}`,
+          }))
+          .sort((a, b) => {
+            // Combinar fecha y hora para comparación
+            const dateA = new Date(`${a.dia} ${a.horario}`);
+            const dateB = new Date(`${b.dia} ${b.horario}`);
+            return dateB.getTime() - dateA.getTime(); // Orden descendente
+          })
+          .map((log) => log.logString);
+  
         this.updateChartUsuarios(); // Actualiza los gráficos cuando los datos se reciban
       },
       error: (err) => {
@@ -240,6 +257,105 @@ export class EstadisticasComponent implements OnInit {
   }
 
   downloadPDF() {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    let yPosition = 10;
+  
+    // Capturar gráficos
+    const chartElements = [
+      { id: 'chart-especialidad', title: 'Gráfico de Especialidades' },
+      { id: 'chart-turnos', title: 'Gráfico de Turnos por Día' },
+      { id: 'chart-medicos', title: 'Gráfico de Médicos' },
+      { id: 'chart-turnos-finalizados', title: 'Gráfico de Turnos Finalizados' },
+    ];
+  
+    const promises = chartElements.map((chart) => {
+      const element = document.getElementById(chart.id);
+      return html2canvas(element!).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        return { imgData, title: chart.title };
+      });
+    });
+    
+    pdf.text('Logs de Usuarios', 10, yPosition);
+    yPosition += 10;
+    this.logsUsuarios.forEach((log) => {
+      if (yPosition + 10 > pageHeight) {
+        pdf.addPage();
+        yPosition = 10;
+      }
+      pdf.text(log, 10, yPosition);
+      yPosition += 10;
+    });
+
+    if (yPosition + 20 > pageHeight) {
+      pdf.addPage();
+      yPosition = 10;
+    }
+    
+    pdf.text('Logs de Turnos', 10, yPosition);
+    yPosition += 10;
+    this.logsTurnos.forEach((log) => {
+      if (yPosition + 10 > pageHeight) {
+        pdf.addPage();
+        yPosition = 10;
+      }
+      pdf.text(log, 10, yPosition);
+      yPosition += 10;
+    });
+
+    // Procesar gráficos y logs
+    Promise.all(promises).then((images) => {
+      images.forEach(({ imgData, title }) => {
+        if (yPosition + 100 > pageHeight) {
+          pdf.addPage();
+          yPosition = 10;
+        }
+        pdf.setFontSize(14);
+        pdf.text(title, pageWidth / 2, yPosition, { align: 'center' });
+        yPosition += 10;
+        pdf.addImage(imgData, 'PNG', 10, yPosition, pageWidth - 20, 80);
+        yPosition += 90;
+      });
+  
+      // Agregar logs
+      if (yPosition + 20 > pageHeight) {
+        pdf.addPage();
+        yPosition = 10;
+      }
+      pdf.setFontSize(12);
+
+  
+      // Descargar el PDF
+      pdf.save('Estadisticas_y_Logs.pdf');
+    });
   }
 
+  downloadExcel() {
+    const wsData: any[] = [];
+  
+    wsData.push(['Tipo de Log', 'Contenido']);
+  
+    // Logs de Usuarios
+    this.logsUsuarios.forEach((log) => {
+      wsData.push(['Log de Usuario', log]);
+    });
+  
+
+    this.logsTurnos.forEach((log) => {
+      wsData.push(['Log de Turno', log]);
+    });
+  
+  
+
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(wsData);
+  
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Estadísticas y Logs');
+  
+
+    XLSX.writeFile(wb, 'Estadisticas_y_Logs.xlsx');
+  }
 }

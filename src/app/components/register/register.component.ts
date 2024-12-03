@@ -18,17 +18,26 @@ import { sendEmailVerification } from 'firebase/auth';
 
 import { getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
 import { Storage } from '@angular/fire/storage';
+import { Subscription } from 'rxjs';
+import { CaptchaDirective } from '../directivas/captcha/captcha.directive';
+import { CaptchaService } from '../services/captcha.service';
 
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxCaptchaModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxCaptchaModule, CaptchaDirective],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
 
 export class RegisterComponent {
+
+  captchaValid: boolean = false;
+  disableCaptcha: boolean = false; // Controla si el captcha está habilitado
+  private captchaSubscription: Subscription;
+
+
   public email: string = '';
   public password: string = '';
   public mensagges = '';
@@ -51,6 +60,7 @@ export class RegisterComponent {
 
 
 
+
   imageName: string = '';
   selectedFile: File | null = null;
   downloadURL: string | null = null;
@@ -60,10 +70,13 @@ export class RegisterComponent {
     private router: Router,
     private fb: FormBuilder,
     private sendUsers: UsuariosService,
-    private storage: Storage
+    private storage: Storage,
+    private captchaService : CaptchaService
   ) {
 
-
+    this.captchaSubscription = this.captchaService.captchaEnabled$.subscribe(enabled => {
+      this.disableCaptcha = !enabled;  // Si está habilitado, disableCaptcha será false
+    });
   }
 
   captchaCode: string = '';
@@ -79,10 +92,17 @@ export class RegisterComponent {
     this.captchaCode;
   }
 
+  habilitado = false;
+
   // Verificar CAPTCHA
   verifyCaptcha(): void {
     console.log(this.captchaCode)
     this.captchaVerified = this.userInput === this.captchaCode;
+
+    if(this.captchaVerified == true)
+    {
+      this.habilitado = true;
+    }
   }
 
   ngOnInit(): void {

@@ -34,6 +34,27 @@ export class MisturnosComponent {
     this.dataNombres();
   }
 
+  getEstadoTurno(estado: string): string {
+    switch (estado) {
+      case 'aceptado':
+        return 'Turno Confirmado';
+      case 'pendiente':
+        return 'Esperando Confirmación';
+      case 'historiaClinica':
+        return 'En Espera de Historia Clínica';
+      case 'cancelado':
+        return 'Turno Cancelado';
+      case 'eliminado':
+        return 'Turno Eliminado';
+      case 'finalizar':
+        return 'Registrando Historia CLinica';
+      case 'FINALIZADO':
+        return 'Turno Finalizado';
+      default:
+        return 'Estado Desconocido';
+    }
+  }
+
   ingresarEncuesta(atencion: string, demora: string, limpieza : string, usuario : string, doctor : string, turno: any)
   {
     console.log(doctor)
@@ -42,9 +63,22 @@ export class MisturnosComponent {
     this.cambiarEstado("FINALIZADO", turno);
   }
 
+  encuesta = false;
+
   ingresarCalificacion(comentario : string, usuario : string)
   {
+    this.encuesta = true;
     this.turnos.ingresarComentarioPaciente(comentario, usuario)
+  }
+
+  
+  ingresarMensajePaciente(comentario : string, usuario : string, horario : string)
+  {
+    this.encuesta = true;
+    console.log(usuario)
+    this.turnos.ingresarEstado("cancelado", usuario, horario)
+    this.turnos.ingresarMensajePaciente(comentario, usuario, horario)
+
   }
 
   ocultarFormularioEncuesta(turno: any) {
@@ -63,8 +97,11 @@ export class MisturnosComponent {
     turno.mostrarFormularioEncuesta = true;
   }
 
-  
+  calificar = false;
+
   mostrarFormularioCalificar(turno: any) {
+
+    this.calificar = true;
     // Mostrar el formulario solo para el turno seleccionado
     this.nombresEspecialistasArray.forEach((t) => {
       t.mostrarFormularioCalificar = false;
@@ -91,7 +128,8 @@ export class MisturnosComponent {
               horario: turno.horario,
               estado: turno.estado,
               mensaje: turno.mensaje,
-              doctor : turno.emailEspecialsita
+              doctor : turno.emailEspecialsita,
+              comentarioPaciente : turno.comentarioPaciente
 
             }));
 
@@ -126,6 +164,18 @@ export class MisturnosComponent {
 
   cambiarEstado(estado : string, usuario : any)
   {
+
+
     this.turnos.ingresarEstado(estado, usuario.paciente, usuario.horario)
+
   }
+
+  mostrarFormularioCancelar(turno: any) {
+    // Mostrar el formulario solo para el turno seleccionado
+    this.nombresEspecialistasArray.forEach((t) => {
+      t.mostrarFormularioCancelar = false;
+    });
+    turno.mostrarFormularioCancelar = true;
+  }
+
 }

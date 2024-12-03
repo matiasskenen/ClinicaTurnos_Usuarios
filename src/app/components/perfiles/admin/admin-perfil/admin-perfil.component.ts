@@ -7,15 +7,17 @@ import { Auth } from '@angular/fire/auth';
 import { jsPDF } from 'jspdf';
 import { CaptchaService } from '../../../services/captcha.service';
 import { Subscription } from 'rxjs';
+import { CaptchaDirective } from '../../../directivas/captcha/captcha.directive';
 
 @Component({
   selector: 'app-admin-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CaptchaDirective],
   templateUrl: './admin-perfil.component.html',
   styleUrl: './admin-perfil.component.scss'
 })
-export class AdminPerfilComponent {
+export class AdminPerfilComponent{
+  
   diagnosticoArray: any[] = [];
   nombresEspecialistasArray: any[] = [];
   nombresFiltrados: any[] = [];
@@ -27,6 +29,10 @@ export class AdminPerfilComponent {
   pacienteFiltrado = "";
   pacienteActual: any;
   historiaClinicaSeleccionada: any = null;
+  
+  captchaValid: boolean = false;
+  disableCaptcha: boolean = false; // Controla si el captcha está habilitado
+  private captchaSubscription: Subscription;
 
   constructor(
     private turnos: TurnosService,
@@ -34,22 +40,13 @@ export class AdminPerfilComponent {
     private auth: Auth,
     private captchaService: CaptchaService
   ) {
-    this.init();
+    this.captchaSubscription = this.captchaService.captchaEnabled$.subscribe(enabled => {
+      this.disableCaptcha = !enabled;  // Si está habilitado, disableCaptcha será false
+    });
   }
-
-  async init() {
-    await this.dataNombres();
-    this.mostrarHistoriaClinica();
-  }
-
-  captchaEnabled: boolean = true;
-  captchaSubscription: any;
 
   ngOnInit() {
-    // Subscribirse al estado del captcha
-    this.captchaSubscription = this.captchaService.captchaEnabled$.subscribe((enabled: boolean) => {
-      this.captchaEnabled = enabled;
-    });
+    this.init();
   }
 
   ngOnDestroy() {
@@ -59,10 +56,19 @@ export class AdminPerfilComponent {
     }
   }
 
+  async init() {
+    await this.dataNombres();
+    this.mostrarHistoriaClinica();
+  }
+
   toggleCaptcha() {
-    console.log("Cambiando estado del captcha");
-    this.captchaService.toggleCaptcha(); // Cambia el estado del captcha
-    console.log("Captcha habilitado: ", this.captchaEnabled);
+    this.captchaValid = false; // Resetear estado de CAPTCHA cuando se cambia el estado
+    this.disableCaptcha = !this.disableCaptcha; // Cambiar estado de CAPTCHA
+    this.captchaService.setCaptchaEnabled(!this.disableCaptcha); // Informar al servicio
+  }
+
+  handleCaptchaValidation(isValid: boolean) {
+    this.captchaValid = isValid; // Actualiza la validez del CAPTCHA
   }
 
   async dataNombres() {
@@ -94,27 +100,13 @@ export class AdminPerfilComponent {
   }
 
   mostrarHistoriaClinica() {
-    console.log("user " + this.pacienteActual);
+    console.log("Cargando todas las historias clínicas...");
     this.turnos.getUsers().subscribe({
       next: (data: any[]) => {
-        const historiasFiltradas = data.filter(
-          (historia: any) => historia.paciente === this.pacienteActual
-        );
-        if (historiasFiltradas.length > 0) {
-          this.historiaClinicaSeleccionada = historiasFiltradas.map((historia: any) => {
+        if (data.length > 0) {
+          this.historiaClinicaSeleccionada = data.map((historia: any) => {
             const datosDinamicos = Object.entries(historia)
-              .filter(
-                ([key]) =>
-                  ![
-                    'apellido',
-                    'clave',
-                    'dni',
-                    'edad',
-                    'email',
-                    'nombre',
-                    'obrasocial',
-                  ].includes(key)
-              )
+              .filter(([key]) => !['apellido', 'clave', 'dni', 'edad', 'email', 'nombre', 'obrasocial'].includes(key))
               .map(([titulo, valor]) => ({ titulo, valor }));
             return {
               apellido: historia.apellido,
@@ -124,10 +116,11 @@ export class AdminPerfilComponent {
               email: historia.email,
               nombre: historia.nombre,
               obrasocial: historia.obrasocial,
+              datosDinamicos, // Incluir datos dinámicos si es necesario
             };
           });
         } else {
-          console.log('No se encontraron historias clínicas para este paciente.');
+          console.log('No se encontraron historias clínicas.');
           this.historiaClinicaSeleccionada = [];
         }
         console.log(this.historiaClinicaSeleccionada);
@@ -137,6 +130,7 @@ export class AdminPerfilComponent {
       },
     });
   }
+  
 
   ddescargarHistoriaClinica() {
     const doc = new jsPDF();

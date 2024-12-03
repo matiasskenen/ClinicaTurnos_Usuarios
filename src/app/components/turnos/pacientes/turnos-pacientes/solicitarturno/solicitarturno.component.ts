@@ -11,7 +11,7 @@ import { CaptchaDirective } from '../../../../directivas/captcha/captcha.directi
 import { CaptchaService } from '../../../../services/captcha.service';
 import { Input } from '@angular/core';
 import { ScrollDirective } from '../../../../directivas/scroll/scroll.directive';
-import { AgrandarbtnDirective } from '../../../../directivas/agrandarbtn/agrandarbtn.directive';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -22,9 +22,16 @@ import { AgrandarbtnDirective } from '../../../../directivas/agrandarbtn/agranda
   styleUrls: ['./solicitarturno.component.scss']
 })
 export class SolicitarturnoComponent {
+
+  
+  captchaValid: boolean = false;
+  disableCaptcha: boolean = false; // Controla si el captcha está habilitado
+  private captchaSubscription: Subscription;
+
   fechaSeleccionada: Date = new Date();
   nombresEspecialistasArray: any[] = [];
   nombresFiltrados: any[] = [];
+  nombresEspecialistasArrayPacientes: any[] = [];
   selectedEspecialidad: string = '';
   especialidadSeleccionada: string = '';
   especialidades: string[] = [];
@@ -48,12 +55,44 @@ export class SolicitarturnoComponent {
         this.user = user.email;
       }
     });
+
+    this.captchaSubscription = this.captchaService.captchaEnabled$.subscribe(enabled => {
+      this.disableCaptcha = !enabled;  // Si está habilitado, disableCaptcha será false
+    });
   }
 
   user : any;
 
 
   captchaEnabled!: boolean;
+
+  captchaCode: string = '';
+  userInput: string = '';
+  captchaVerified: boolean | null = null;
+
+   // Generar CAPTCHA
+   generateCaptcha(): void {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    this.captchaCode = Array.from({ length: 6 }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    this.userInput = '';  // Restablece el campo de entrada del usuario
+    this.captchaVerified = null;  // Restablece la verificación
+  }
+
+  // Verificar CAPTCHA
+  verifyCaptcha(): void {
+    this.captchaVerified = this.userInput === this.captchaCode;
+  
+    if (this.captchaVerified) {
+      this.captchaValid = true;
+      this.habilitado = true;  // Habilita el botón para solicitar el turno
+    } else {
+      this.captchaValid = false;
+    }
+  }
+
+  handleCaptchaValidation(isValid: boolean) {
+    this.captchaValid = isValid; // Actualiza la validez del CAPTCHA
+  }
 
   irArriba() {
     window.scrollTo({
@@ -64,7 +103,7 @@ export class SolicitarturnoComponent {
 
   habilitado = false;
 
-  onCaptchaValidation(isValid: boolean): void {
+  onCaptchaValidation(isValid: any): void {
     if (isValid) {
       this.habilitado = true;
       console.log('CAPTCHA válido, puedes continuar');
@@ -123,6 +162,28 @@ export class SolicitarturnoComponent {
         especialidades: Object.keys(especialista.especialista).filter(key => especialista.especialista[key])
       }));
       this.especialidades = [...new Set(this.nombresEspecialistasArray.flatMap(especialista => especialista.especialidades))];
+    });
+  }
+
+  nombrePaciente: string = "";
+
+  dataNombresPaciente(usuarioEmail: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.turnos.getUsers().subscribe((data: any[]) => {
+        const pacienteFiltrado = data.find((paciente: any) => paciente.email === usuarioEmail);
+  
+        if (pacienteFiltrado) {
+          this.nombrePaciente = `${pacienteFiltrado.nombre} ${pacienteFiltrado.apellido}`;
+          resolve(); // Resuelve la promesa cuando el nombre del paciente se obtiene correctamente
+        } else {
+          console.warn('No se encontró un paciente con el email especificado.');
+          this.nombrePaciente = "Paciente no encontrado";
+          reject(new Error('Paciente no encontrado'));
+        }
+      }, (error) => {
+        console.error('Error al obtener los datos del paciente', error);
+        reject(error); // Rechaza la promesa si ocurre un error
+      });
     });
   }
 
@@ -193,49 +254,57 @@ export class SolicitarturnoComponent {
 
   turnoValido : boolean = false;
 
-  confirmarturno() {
+  async confirmarturno() {
     const dia = this.fechaSeleccionada;
     const fechaFormateada = `${dia.getDate().toString().padStart(2, '0')}/${(dia.getMonth() + 1).toString().padStart(2, '0')}/${dia.getFullYear()}`;
   
-    // Llamamos a la función validarturno y esperamos su respuesta
-    this.validarturno(this.turnoSeleccionado, fechaFormateada).then((isValid: boolean) => {
+    try {
+      const isValid = await this.validarturno(this.turnoSeleccionado, fechaFormateada);
       if (isValid) {
-        // Si el turno es válido, se confirma la selección
-        this.turnos.sendturno(this.user, this.especialista.nombre + " " + this.especialista.apellido, this.especialidadSeleccionada, this.turnoSeleccionado, this.especialista.email, fechaFormateada);
+        await this.dataNombresPaciente(this.user); // Espera a que se obtenga el nombre del paciente
+  
+        this.turnos.sendturno(
+          this.user,
+          `${this.especialista.nombre} ${this.especialista.apellido}`,
+          this.especialidadSeleccionada,
+          this.turnoSeleccionado,
+          this.especialista.email,
+          fechaFormateada,
+          this.nombrePaciente
+        );
+  
         this.mensajeExito = true;
         setTimeout(() => {
           this.mensajeExito = false;
-  
           Swal.fire({
             title: 'Éxito!',
             text: 'El turno fue solicitado.',
             icon: 'success',
-            confirmButtonText: 'Aceptar'
-          })
-          
-          this.turnos.sendlogTurnoMedico(this.especialista.nombre + " " + this.especialista.apellido)
+            confirmButtonText: 'Aceptar',
+          });
+  
+          this.turnos.sendlogTurnoMedico(`${this.especialista.nombre} ${this.especialista.apellido}`);
           this.turnos.sendLogTurnosPorDia();
-          this.turnos.sendLogEspecialidad(this.especialidadSeleccionada)
+          this.turnos.sendLogEspecialidad(this.especialidadSeleccionada);
           this.router.navigate(['/turnoPaciente']);
         }, 2000);
       } else {
-        // Si el turno ya está reservado, mostramos el error
         Swal.fire({
           title: 'Error!',
           text: 'El turno ya está reservado.',
           icon: 'error',
-          confirmButtonText: 'Intentar de nuevo'
+          confirmButtonText: 'Intentar de nuevo',
         });
       }
-    }).catch((error) => {
-      console.log("Error al validar el turno", error);
+    } catch (error) {
+      console.log('Error al confirmar el turno:', error);
       Swal.fire({
         title: 'Error!',
-        text: 'Hubo un problema al validar el turno.',
+        text: 'Hubo un problema al confirmar el turno.',
         icon: 'error',
-        confirmButtonText: 'Intentar de nuevo'
+        confirmButtonText: 'Intentar de nuevo',
       });
-    });
+    }
   }
 
 
