@@ -8,6 +8,7 @@ import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';  // Import SheetJS (xlsx)
 
 import html2canvas from 'html2canvas';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 
 @Component({
@@ -15,7 +16,19 @@ import html2canvas from 'html2canvas';
   standalone: true,
   imports: [ChartModule, CommonModule, FormsModule],
   templateUrl: './estadisticas.component.html',
-  styleUrls: ['./estadisticas.component.scss']
+  styleUrls: ['./estadisticas.component.scss'],
+  animations: [
+    trigger('routeAnimations', [
+      transition('HomePage => LoginPage', [
+        style({ transform: 'translateX(100%)', opacity: 0 }),
+        animate('300ms', style({ transform: 'translateX(0)', opacity: 1 }))
+      ]),
+      transition('LoginPage => HomePage', [
+        style({ transform: 'translateX(-100%)', opacity: 0 }),
+        animate('300ms', style({ transform: 'translateX(0)', opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class EstadisticasComponent implements OnInit {
   // Datos para gráficos
@@ -346,8 +359,23 @@ export class EstadisticasComponent implements OnInit {
     this.logsTurnos.forEach((log) => {
       wsData.push(['Log de Turno', log]);
     });
+    
+
+    const chartElements = [
+      { id: 'chart-especialidad', title: 'Gráfico de Especialidades' },
+      { id: 'chart-turnos', title: 'Gráfico de Turnos por Día' },
+      { id: 'chart-medicos', title: 'Gráfico de Médicos' },
+      { id: 'chart-turnos-finalizados', title: 'Gráfico de Turnos Finalizados' },
+    ];
   
-  
+    const promises = chartElements.map((chart) => {
+      const element = document.getElementById(chart.id);
+      return html2canvas(element!).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        return { imgData, title: chart.title };
+      });
+    });
+    
 
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(wsData);
   

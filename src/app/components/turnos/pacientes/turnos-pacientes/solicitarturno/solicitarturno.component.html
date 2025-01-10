@@ -26,23 +26,29 @@
       </div>
     </div>
 
-    <!-- Tarjetas de Especialidades -->
-    <div class="custom-row" *ngIf="eleccion2">
-      <div class="especialidad-wrapper" *ngFor="let especialidad of imagenesEspecilistasArray">
-        <div class="especialidades-card">
-          <p>{{especialidad.especialidad1}}</p>
-          <div class="customes-card"
-            [style.backgroundImage]="'url(' + especialidad.imgurl1 + ')'"
-            (click)="seleccionarEspecialidad(especialidad.especialidad1)"></div>
+      <!-- Tarjetas de Especialidades -->
+      <div class="custom-row" *ngIf="eleccion2">
+        <div *ngIf="imagenesEspecilistasArray.length === 0; else cardsNotEmpty">
+          <p>No se encontraron especialidades.</p>
         </div>
-        <div class="especialidades-card" *ngIf="especialidad.especialidad2 != 'No especificada'">
-          <p>{{especialidad.especialidad2}}</p>
-          <div class="customes-card"
-            [style.backgroundImage]="'url(' + especialidad.imgurl2 + ')'"
-            (click)="seleccionarEspecialidad(especialidad.especialidad2)"></div>
-        </div>
+
+        <ng-template #cardsNotEmpty>
+          <div class="especialidad-wrapper" *ngFor="let especialidad of imagenesEspecilistasArray">
+            <div class="especialidades-card">
+              <p>{{especialidad.especialidad1}}</p>
+              <div class="customes-card"
+                [style.backgroundImage]="'url(' + especialidad.imgurl1 + ')'"
+                (click)="seleccionarEspecialidad(especialidad.especialidad1)"></div>
+            </div>
+            <div class="especialidades-card" *ngIf="especialidad.especialidad2 != 'No especificada'">
+              <p>{{especialidad.especialidad2}}</p>
+              <div class="customes-card"
+                [style.backgroundImage]="'url(' + especialidad.imgurl2 + ')'"
+                (click)="seleccionarEspecialidad(especialidad.especialidad2)"></div>
+            </div>
+          </div>
+        </ng-template>
       </div>
-    </div>
 
         <!-- Resumen y Confirmación -->
 

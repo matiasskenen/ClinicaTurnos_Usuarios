@@ -13,10 +13,9 @@ export class AuthCheckDirective {
   ) {
     onAuthStateChanged(this.auth, (user) => {
       if (user) {
-        // Usuario logueado: asegura que el elemento esté visible
         this.renderer.setStyle(this.elementRef.nativeElement, 'display', 'block');
       } else {
-        // Usuario no logueado: oculta el elemento
+        //oculta el elemento
         this.renderer.setStyle(this.elementRef.nativeElement, 'display', 'none');
       }
     });

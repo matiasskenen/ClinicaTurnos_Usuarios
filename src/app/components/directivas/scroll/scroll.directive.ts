@@ -5,16 +5,15 @@ import { Directive, ElementRef, Input, HostListener } from '@angular/core';
   standalone: true
 })
 export class ScrollDirective {
-  @Input() scrollToTop: boolean = false; // Si es true, desplazarse al inicio de la página
-  @Input() scrollBehavior: 'auto' | 'smooth' = 'smooth'; // Estilo de desplazamiento
+  @Input() scrollToTop: boolean = false; 
+  @Input() scrollBehavior: 'auto' | 'smooth' = 'smooth'; 
 
   constructor(private el: ElementRef) {}
 
   @HostListener('click') onClick() {
-    // Desplazar hacia la parte superior de la página
     window.scrollTo({
-      top: 0, // Siempre arriba del todo
-      behavior: 'smooth' // Desplazamiento suave
+      top: 0, 
+      behavior: 'smooth' 
     });
   }
 }

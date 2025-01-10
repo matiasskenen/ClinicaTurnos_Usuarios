@@ -21,7 +21,7 @@ import { Storage } from '@angular/fire/storage';
 import { Subscription } from 'rxjs';
 import { CaptchaDirective } from '../directivas/captcha/captcha.directive';
 import { CaptchaService } from '../services/captcha.service';
-
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-register',
@@ -29,6 +29,15 @@ import { CaptchaService } from '../services/captcha.service';
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxCaptchaModule, CaptchaDirective],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
+  animations: [
+    trigger('routeAnimations', [
+      transition('HomePage => LoginPage', [
+        style({ opacity: 0 }),
+        animate('300ms', style({ opacity: 1 }))
+      ]),
+      // Agregar más transiciones según las necesidades
+    ])
+  ]
 })
 
 export class RegisterComponent {

@@ -34,7 +34,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
         style({ opacity: 0 }),
         animate('300ms', style({ opacity: 1 }))
       ]),
-      // Agregar más transiciones según las necesidades
     ])
   ]
 })

@@ -5,13 +5,28 @@ import { Auth } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FilterPipe } from '../../pipes/filtroDatos/filter.pipe';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin.component.html',
-  styleUrl: './admin.component.scss'
+  styleUrl: './admin.component.scss',
+  animations:
+  [
+    trigger('routeAnimations', [
+      transition('HomePage => LoginPage', [
+        style({ opacity: 0, transform: 'scale(0.8)' }),
+        animate('300ms', style({ opacity: 1, transform: 'scale(1)' }))
+      ]),
+      transition('LoginPage => HomePage', [
+        style({ opacity: 0, transform: 'scale(0.8)' }),
+        animate('300ms', style({ opacity: 1, transform: 'scale(1)' }))
+      ])
+    ])
+    
+  ]
 })
 export class AdminComponent {
 // Variables

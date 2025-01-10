@@ -5,6 +5,7 @@ import { Auth } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { jsPDF } from 'jspdf';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-paciente-perfil',
@@ -12,6 +13,18 @@ import { jsPDF } from 'jspdf';
   imports: [CommonModule, FormsModule],
   templateUrl: './paciente-perfil.component.html',
   styleUrl: './paciente-perfil.component.scss',
+  animations: [
+    trigger('routeAnimations', [
+      transition('HomePage => LoginPage', [
+        style({ transform: 'translateY(100%)' }),
+        animate('300ms', style({ transform: 'translateY(0)' }))
+      ]),
+      transition('LoginPage => HomePage', [
+        style({ transform: 'translateY(-100%)' }),
+        animate('300ms', style({ transform: 'translateY(0)' }))
+      ])
+    ])
+  ]
 })
 export class PacientePerfilComponent {
   diagnosticoArray: any[] = [];
@@ -24,6 +37,7 @@ export class PacientePerfilComponent {
   mensajeExito: boolean = false;
   pacienteFiltrado = "";
   pacienteActual: any;
+  
 
   historiaClinicaSeleccionada: any = null;
   historiaClinicaPersonalizada : any = null;

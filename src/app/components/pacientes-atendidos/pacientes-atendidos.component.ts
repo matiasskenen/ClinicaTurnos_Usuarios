@@ -4,13 +4,26 @@ import { DataService } from '../../services/authUsers/data.service';
 import { Auth } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-pacientes-atendidos',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pacientes-atendidos.component.html',
-  styleUrl: './pacientes-atendidos.component.scss'
+  styleUrl: './pacientes-atendidos.component.scss',
+  animations: [
+    trigger('routeAnimations', [
+      transition('HomePage => LoginPage', [
+        style({ opacity: 0, transform: 'translateY(50%)' }),
+        animate('300ms', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition('LoginPage => HomePage', [
+        style({ opacity: 0, transform: 'translateY(-50%)' }),
+        animate('300ms', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ])
+  ]
 })
 export class PacientesAtendidosComponent {
 
@@ -118,6 +131,7 @@ export class PacientesAtendidosComponent {
                       'estado',
                       'mensaje',
                       'comentarioPaciente',
+                      'nombrePaciente'
                     ].includes(key)
                 )
                 .map(([titulo, valor]) => ({ titulo, valor }));
@@ -129,7 +143,7 @@ export class PacientesAtendidosComponent {
                 presion: historia.presion,
                 temperatura: historia.temperatura,
                 fecha: historia.fecha,
-                doctor: historia.doctor,
+                doctor: historia.especialista,
                 observaciones: historia.observaciones || 'Sin observaciones',
                 datosDinamicos,
               };
